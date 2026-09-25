@@ -1,49 +1,63 @@
+/* =========================================================
+   RESET
+========================================================= */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+html {
+    width: 100%;
+    min-height: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f6f8;
     color: #222;
+    min-height: 100vh;
 }
 
 
-/* =========================================
+/* =========================================================
    CABEÇALHO
-========================================= */
+========================================================= */
 
 .cabecalho {
-    width: calc(100% - 380px);
+    position: fixed;
+    top: 0;
+    right: 0;
+
+    width: calc(100% - 320px);
     height: 70px;
 
-    background-color: #0d47a1;
+    background-color: #5907f1;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    padding: 0 60px;
+    padding: 0 35px;
 
-    margin-left: 380px;
-
-    position: relative;
+    z-index: 1000;
 }
 
 
-.nome-supermercado {
-    position: absolute;
+/* =========================================================
+   LOGO
+========================================================= */
 
-    left: 50%;
-    top: 50%;
+.logo {
+    display: flex;
+    align-items: center;
+}
 
-    transform: translate(-50%, -50%);
-
+.logo h1 {
     margin: 0;
 
-    color: white;
+    color: #ffffff;
 
     font-size: 24px;
     font-weight: bold;
@@ -52,21 +66,15 @@ body {
 }
 
 
-/* LOGO */
-
-.logo h1 {
-    color: white;
-    font-size: 24px;
-}
-
-
-/* BOTÃO USUÁRIO */
+/* =========================================================
+   BOTÃO USUÁRIO
+========================================================= */
 
 .botao-usuario {
     border: none;
 
-    background-color: white;
-    color: #0d47a1;
+    background-color: #ffffff;
+    color: #5907f1;
 
     padding: 10px 16px;
 
@@ -86,56 +94,349 @@ body {
 }
 
 .botao-usuario:hover {
-    background-color: #e8eef8;
+    background-color: #eeeeee;
     transform: translateY(-1px);
 }
 
-.icone-usuario {
+.icone-sair {
     font-size: 18px;
+    line-height: 1;
 }
 
 
-/* =========================================
+/* =========================================================
+   BARRA LATERAL
+========================================================= */
+
+.barra-lateral {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 320px;
+    height: 100vh;
+
+    background-color: #ffffff;
+
+    z-index: 1100;
+
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.12);
+
+    overflow-y: auto;
+}
+
+
+/* =========================================================
+   TOPO DA BARRA LATERAL
+========================================================= */
+
+.topo-lateral {
+    width: 100%;
+    height: 70px;
+
+    background-color: #5907f1;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 20px;
+}
+
+.topo-lateral h2 {
+    font-size: 19px;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   BOTÃO FECHAR MENU
+========================================================= */
+
+.fechar-menu {
+    width: 35px;
+    height: 35px;
+
+    border: none;
+    background: transparent;
+
+    color: #ffffff;
+
+    font-size: 24px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    border-radius: 6px;
+
+    transition: 0.2s;
+}
+
+.fechar-menu:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+
+/* =========================================================
+   MENU DE NAVEGAÇÃO
+========================================================= */
+
+.menu-navegacao {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 15px;
+
+    gap: 8px;
+
+    border-bottom: 1px solid #e5e5e5;
+}
+
+
+/* =========================================================
+   ITENS DO MENU
+========================================================= */
+
+.item-menu {
+    width: 100%;
+
+    min-height: 46px;
+
+    padding: 13px 15px;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: transparent;
+    color: #333333;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.item-menu:hover {
+    background-color: #f0e8ff;
+    color: #5907f1;
+}
+
+.item-menu.ativo {
+    background-color: #eee2ff;
+    color: #5907f1;
+}
+
+
+/* =========================================================
+   CONTEÚDO DA BARRA LATERAL
+========================================================= */
+
+.conteudo-lateral {
+    padding: 25px 20px;
+}
+
+.conteudo-lateral h2 {
+    font-size: 21px;
+    color: #5907f1;
+
+    margin-bottom: 20px;
+}
+
+.conteudo-lateral p {
+    color: #666666;
+
+    font-size: 14px;
+    line-height: 1.6;
+
+    margin-bottom: 8px;
+}
+
+
+/* =========================================================
+   PAINEL INICIAL DA LATERAL
+========================================================= */
+
+.painel-inicio {
+    display: block;
+}
+
+
+/* =========================================================
+   FORMULÁRIOS ANTIGOS / COMPATIBILIDADE
+========================================================= */
+
+#formPerfil,
+#formPerfilCentral,
+#formEndereco {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+/* =========================================================
+   CAMPOS DE FORMULÁRIO
+========================================================= */
+
+#formPerfil label,
+#formPerfilCentral label,
+#formEndereco label {
+    font-size: 14px;
+
+    font-weight: bold;
+
+    color: #333333;
+
+    margin-top: 8px;
+}
+
+#formPerfil input,
+#formPerfilCentral input,
+#formEndereco input,
+#formPerfil select,
+#formPerfilCentral select,
+#formEndereco select {
+    width: 100%;
+
+    padding: 13px;
+
+    border: 1px solid #cccccc;
+
+    border-radius: 7px;
+
+    background-color: #ffffff;
+
+    color: #222222;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+#formPerfil input:focus,
+#formPerfilCentral input:focus,
+#formEndereco input:focus,
+#formPerfil select:focus,
+#formPerfilCentral select:focus,
+#formEndereco select:focus {
+    border-color: #5907f1;
+
+    box-shadow: 0 0 0 2px rgba(89, 7, 241, 0.10);
+}
+
+#formPerfil select,
+#formPerfilCentral select,
+#formEndereco select {
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   BOTÃO SALVAR
+========================================================= */
+
+.botao-salvar {
+    width: 100%;
+
+    margin-top: 15px;
+
+    padding: 13px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: #5907f1;
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.botao-salvar:hover {
+    background-color: #4605c4;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
    CONTEÚDO PRINCIPAL
-========================================= */
+========================================================= */
 
 .conteudo {
-    width: calc(100% - 380px);
+    width: calc(100% - 320px);
 
-    max-width: 1000px;
+    min-height: calc(100vh - 70px);
 
-    margin: 40px auto;
+    margin-left: 320px;
 
-    margin-left: 380px;
+    padding: 40px 45px;
 
-    padding: 0 30px;
+    padding-top: 110px;
 }
 
 
-/* =========================================
+/* =========================================================
+   TELAS CENTRAIS
+========================================================= */
+
+.tela-central {
+    width: 100%;
+}
+
+
+/* =========================================================
    BOAS-VINDAS
-========================================= */
+========================================================= */
 
 .boas-vindas {
+    width: 100%;
+
     margin-bottom: 30px;
 }
 
 .boas-vindas h2 {
     font-size: 28px;
+
     margin-bottom: 8px;
+
+    color: #222222;
 }
 
 .boas-vindas p {
-    color: #666;
+    color: #666666;
+
+    font-size: 15px;
 }
 
 
-/* =========================================
+/* =========================================================
    COMPRAS
-========================================= */
+========================================================= */
 
 .compras {
-    background-color: white;
+    width: 100%;
+
+    background-color: #ffffff;
 
     padding: 25px;
 
@@ -150,30 +451,33 @@ body {
 
 .titulo-compras h2 {
     font-size: 22px;
+
+    color: #222222;
 }
 
 
-/* =========================================
+/* =========================================================
    LISTA DE COMPRAS
-========================================= */
+========================================================= */
 
 .lista-compras {
-    display: flex;
+    width: 100%;
 
+    display: flex;
     flex-direction: column;
 
     gap: 15px;
 }
 
 
-/* =========================================
+/* =========================================================
    COMPRA
-========================================= */
+========================================================= */
 
 .compra {
     width: 100%;
 
-    border: 1px solid #ddd;
+    border: 1px solid #dddddd;
 
     border-radius: 8px;
 
@@ -182,55 +486,72 @@ body {
     display: flex;
 
     justify-content: space-between;
-
     align-items: center;
+
+    gap: 20px;
 
     transition: 0.2s;
 
-    background-color: white;
+    background-color: #ffffff;
 
     cursor: pointer;
 
     text-align: left;
 
     font-family: inherit;
+
+    color: #222222;
 }
 
 .compra:hover {
-    border-color: #0d47a1;
+    border-color: #5907f1;
+
+    background-color: #faf8ff;
+
+    transform: translateY(-1px);
 }
-
-
-/* INFORMAÇÕES */
 
 .compra h3 {
     margin-bottom: 6px;
 
     font-size: 17px;
+
+    color: #222222;
 }
 
 .compra p {
-    color: #777;
+    color: #777777;
 
     font-size: 14px;
 }
+
+
+/* =========================================================
+   INFORMAÇÕES DA COMPRA
+========================================================= */
 
 .informacoes-compra {
     display: flex;
 
     align-items: center;
 
+    justify-content: flex-end;
+
     gap: 15px;
+
+    flex-shrink: 0;
 }
 
 .informacoes-compra strong {
     font-size: 17px;
+
+    color: #222222;
 }
 
 
-/* =========================================
+/* =========================================================
    STATUS
-========================================= */
+========================================================= */
 
 .status {
     background-color: #e8f5e9;
@@ -244,269 +565,14 @@ body {
     font-size: 13px;
 
     font-weight: bold;
+
+    white-space: nowrap;
 }
 
 
-/* =========================================
-   BARRA LATERAL
-========================================= */
-
-.barra-lateral {
-    position: fixed;
-
-    top: 0;
-    left: 0;
-
-    width: 380px;
-    max-width: 90%;
-
-    height: 100vh;
-
-    background-color: white;
-
-    z-index: 1000;
-
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
-
-    overflow-y: auto;
-}
-
-
-/* =========================================
-   TOPO DA LATERAL
-========================================= */
-
-.topo-lateral {
-    height: 70px;
-
-    background-color: #0d47a1;
-
-    color: white;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    padding: 0 20px;
-}
-
-.topo-lateral h2 {
-    font-size: 19px;
-}
-
-
-/* =========================================
-   BOTÃO FECHAR
-========================================= */
-
-.fechar-menu {
-    border: none;
-
-    background: transparent;
-
-    color: white;
-
-    font-size: 22px;
-
-    cursor: pointer;
-
-    padding: 5px;
-}
-
-.fechar-menu:hover {
-    color: #dbe7ff;
-}
-
-
-/* =========================================
-   MENU DE NAVEGAÇÃO
-========================================= */
-
-.menu-navegacao {
-    display: flex;
-
-    flex-direction: column;
-
-    padding: 15px;
-
-    gap: 8px;
-
-    border-bottom: 1px solid #ddd;
-}
-
-
-/* ITENS DO MENU */
-
-.item-menu {
-    width: 100%;
-
-    padding: 13px 15px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background-color: transparent;
-
-    color: #333;
-
-    font-size: 15px;
-
-    font-weight: bold;
-
-    text-align: left;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.item-menu:hover {
-    background-color: #e8eef8;
-
-    color: #0d47a1;
-}
-
-
-/* ITEM ATIVO */
-
-.item-menu.ativo {
-    background-color: #e3ecfb;
-
-    color: #0d47a1;
-}
-
-
-/* =========================================
-   CONTEÚDO DA LATERAL
-========================================= */
-
-.conteudo-lateral {
-    padding: 25px 20px;
-}
-
-
-/* =========================================
-   PAINÉIS DA LATERAL
-========================================= */
-
-.painel-inicio,
-.painel-perfil {
-    display: none;
-}
-
-.painel-inicio {
-    display: block;
-}
-
-
-/* TÍTULOS */
-
-.conteudo-lateral h2 {
-    font-size: 21px;
-
-    color: #0d47a1;
-
-    margin-bottom: 20px;
-}
-
-.conteudo-lateral p {
-    color: #666;
-
-    font-size: 14px;
-
-    line-height: 1.6;
-}
-
-
-/* =========================================
-   PERFIL DA LATERAL
-========================================= */
-
-#formPerfil {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 10px;
-}
-
-#formPerfil label {
-    font-size: 14px;
-
-    font-weight: bold;
-
-    color: #333;
-
-    margin-top: 8px;
-}
-
-#formPerfil input {
-    width: 100%;
-
-    padding: 12px;
-
-    border: 1px solid #ccc;
-
-    border-radius: 7px;
-
-    font-size: 14px;
-
-    outline: none;
-}
-
-#formPerfil input:focus {
-    border-color: #0d47a1;
-
-    box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
-}
-
-
-/* =========================================
-   BOTÃO SALVAR
-========================================= */
-
-.botao-salvar {
-    margin-top: 15px;
-
-    padding: 12px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background-color: #0d47a1;
-
-    color: white;
-
-    font-size: 15px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.botao-salvar:hover {
-    background-color: #083575;
-}
-
-
-/* =========================================
-   TELAS CENTRAIS
-========================================= */
-
-.tela-central {
-    width: 100%;
-}
-
-
-/* =========================================
+/* =========================================================
    CABEÇALHO DAS TELAS
-========================================= */
+========================================================= */
 
 .cabecalho-tela {
     width: 100%;
@@ -516,25 +582,36 @@ body {
     margin-bottom: 30px;
 }
 
+.cabecalho-tela h2 {
+    font-size: 28px;
 
-/* =========================================
+    color: #222222;
+
+    margin-bottom: 8px;
+}
+
+.cabecalho-tela p {
+    color: #666666;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
    PERFIL CENTRAL
-========================================= */
+========================================================= */
 
 .tela-perfil {
     width: 100%;
-
-    display: flex;
-
-    justify-content: center;
 }
 
 .card-perfil {
-    background-color: white;
+    background-color: #ffffff;
 
-    width: 80%;
-
+    width: 100%;
     max-width: 700px;
+
+    margin: 0 auto;
 
     padding: 30px;
 
@@ -551,78 +628,22 @@ body {
     gap: 10px;
 }
 
-.card-perfil label {
-    font-size: 14px;
 
-    font-weight: bold;
-
-    margin-top: 8px;
-}
-
-.card-perfil input {
-    width: 100%;
-
-    padding: 13px;
-
-    border: 1px solid #ccc;
-
-    border-radius: 7px;
-
-    font-size: 14px;
-
-    outline: none;
-}
-
-.card-perfil input:focus {
-    border-color: #0d47a1;
-}
-
-
-/* BOTÃO SALVAR DO PERFIL */
-
-.card-perfil .botao-salvar {
-    margin-top: 15px;
-
-    padding: 13px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background-color: #0d47a1;
-
-    color: white;
-
-    font-weight: bold;
-
-    font-size: 15px;
-
-    cursor: pointer;
-}
-
-.card-perfil .botao-salvar:hover {
-    background-color: #083575;
-}
-
-
-/* =========================================
+/* =========================================================
    ENDEREÇO CENTRAL
-========================================= */
+========================================================= */
 
 .tela-endereco {
     width: 100%;
-
-    display: flex;
-
-    justify-content: center;
 }
 
 .card-endereco {
-    background-color: white;
+    background-color: #ffffff;
 
-    width: 80%;
-
+    width: 100%;
     max-width: 700px;
+
+    margin: 0 auto;
 
     padding: 30px;
 
@@ -632,83 +653,12 @@ body {
 }
 
 
-/* FORMULÁRIO DE ENDEREÇO */
-
-#formEndereco {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 10px;
-}
-
-
-#formEndereco label {
-    font-size: 14px;
-
-    font-weight: bold;
-
-    color: #333;
-
-    margin-top: 8px;
-}
-
-
-#formEndereco input {
-    width: 100%;
-
-    padding: 13px;
-
-    border: 1px solid #ccc;
-
-    border-radius: 7px;
-
-    font-size: 14px;
-
-    outline: none;
-}
-
-
-#formEndereco input:focus {
-    border-color: #0d47a1;
-
-    box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
-}
-
-
-.card-endereco .botao-salvar {
-    width: 100%;
-
-    margin-top: 15px;
-
-    padding: 13px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background-color: #0d47a1;
-
-    color: white;
-
-    font-weight: bold;
-
-    font-size: 15px;
-
-    cursor: pointer;
-}
-
-.card-endereco .botao-salvar:hover {
-    background-color: #083575;
-}
-
-
-/* =========================================
+/* =========================================================
    PEDIDOS NO CENTRO
-========================================= */
+========================================================= */
 
 .lista-pedidos-central {
-    width: 80%;
+    width: 100%;
 
     max-width: 800px;
 
@@ -726,17 +676,19 @@ body {
 
     padding: 20px;
 
-    border: 1px solid #ddd;
+    border: 1px solid #dddddd;
 
     border-radius: 10px;
 
-    background-color: white;
+    background-color: #ffffff;
 
     display: flex;
 
     align-items: center;
 
     justify-content: space-between;
+
+    gap: 20px;
 
     cursor: pointer;
 
@@ -746,9 +698,9 @@ body {
 }
 
 .pedido-central:hover {
-    border-color: #0d47a1;
+    border-color: #5907f1;
 
-    background-color: #f5f8fd;
+    background-color: #faf8ff;
 }
 
 .pedido-central h3 {
@@ -756,28 +708,28 @@ body {
 }
 
 .pedido-central p {
-    color: #777;
+    color: #777777;
 
     font-size: 14px;
 }
 
 .pedido-central strong {
-    color: #0d47a1;
+    color: #5907f1;
 
     font-size: 17px;
 }
 
 
-/* =========================================
+/* =========================================================
    BOTÃO VOLTAR
-========================================= */
+========================================================= */
 
 .botao-voltar {
     border: none;
 
-    background-color: #e8eef8;
+    background-color: #eee2ff;
 
-    color: #0d47a1;
+    color: #5907f1;
 
     padding: 10px 14px;
 
@@ -790,25 +742,31 @@ body {
     cursor: pointer;
 
     margin-bottom: 20px;
+
+    transition: 0.2s;
 }
 
 .botao-voltar:hover {
-    background-color: #d6e3f8;
+    background-color: #dfcfff;
+
+    transform: translateX(-2px);
 }
 
 
-/* =========================================
+/* =========================================================
    DETALHES DO PEDIDO
-========================================= */
+========================================================= */
 
 #detalhesPedido {
-    border-top: 1px solid #ddd;
+    width: 100%;
 
-    padding-top: 15px;
+    border-top: 1px solid #dddddd;
+
+    padding-top: 20px;
 }
 
 #detalhesPedido h3 {
-    color: #0d47a1;
+    color: #5907f1;
 
     font-size: 17px;
 
@@ -820,7 +778,7 @@ body {
 }
 
 #detalhesPedido .item-produto {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #eeeeee;
 
     padding: 12px 0;
 }
@@ -830,29 +788,165 @@ body {
 
     padding-top: 15px;
 
-    border-top: 2px solid #0d47a1;
+    border-top: 2px solid #5907f1;
 
     font-size: 18px;
 
     font-weight: bold;
 
-    color: #0d47a1;
+    color: #5907f1;
 }
 
 
-/* =========================================
-   RESPONSIVO
-========================================= */
+/* =========================================================
+   ACOMPANHAR ENTREGA
+========================================================= */
 
-@media (max-width: 800px) {
+.area-acompanhar-entrega {
+    width: 100%;
+
+    margin: 25px 0;
+}
+
+.card-acompanhar-entrega {
+    width: 100%;
+
+    background-color: #f5f8fd;
+
+    border: 1px solid #d6e3f8;
+
+    border-radius: 10px;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+
+/* =========================================================
+   ÍCONE DA ENTREGA
+========================================================= */
+
+.icone-entrega {
+    width: 50px;
+    height: 50px;
+
+    background-color: #e3ecfb;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 25px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   INFORMAÇÕES DA ENTREGA
+========================================================= */
+
+.informacoes-entrega {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.informacoes-entrega h3 {
+    color: #0d47a1;
+
+    font-size: 17px;
+
+    margin-bottom: 6px;
+}
+
+.informacoes-entrega p {
+    color: #666666;
+
+    font-size: 14px;
+
+    margin: 0;
+}
+
+
+/* =========================================================
+   BOTÃO VISUALIZAR ENTREGA
+========================================================= */
+
+.botao-visualizar-entrega {
+    border: none;
+
+    background-color: #0d47a1;
+
+    color: #ffffff;
+
+    padding: 11px 16px;
+
+    border-radius: 7px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    white-space: nowrap;
+
+    flex-shrink: 0;
+}
+
+.botao-visualizar-entrega:hover {
+    background-color: #083575;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   BARRA DE ROLAGEM
+========================================================= */
+
+.barra-lateral::-webkit-scrollbar {
+    width: 6px;
+}
+
+.barra-lateral::-webkit-scrollbar-track {
+    background: #f5f5f5;
+}
+
+.barra-lateral::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 10px;
+}
+
+.barra-lateral::-webkit-scrollbar-thumb:hover {
+    background: #aaaaaa;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE - TABLET
+========================================================= */
+
+@media (max-width: 900px) {
 
     .barra-lateral {
         width: 280px;
     }
 
     .cabecalho {
-        margin-left: 280px;
-
         width: calc(100% - 280px);
 
         padding: 0 25px;
@@ -863,22 +957,27 @@ body {
 
         margin-left: 280px;
 
-        padding: 0 20px;
+        padding-left: 25px;
+        padding-right: 25px;
     }
 
 }
 
 
-@media (max-width: 600px) {
+/* =========================================================
+   RESPONSIVIDADE - CELULAR
+========================================================= */
+
+@media (max-width: 650px) {
 
     .barra-lateral {
         width: 240px;
     }
 
     .cabecalho {
-        margin-left: 240px;
-
         width: calc(100% - 240px);
+
+        height: 65px;
 
         padding: 0 15px;
     }
@@ -900,9 +999,15 @@ body {
 
         margin-left: 240px;
 
-        padding: 0 15px;
+        padding: 90px 15px 30px;
+    }
 
-        margin-top: 25px;
+    .boas-vindas h2 {
+        font-size: 23px;
+    }
+
+    .compras {
+        padding: 18px;
     }
 
     .compra {
@@ -919,129 +1024,14 @@ body {
         justify-content: space-between;
     }
 
-    .card-perfil {
-        width: 100%;
-    }
-
+    .card-perfil,
     .card-endereco {
-        width: 100%;
+        padding: 20px;
     }
 
-    .lista-pedidos-central {
-        width: 100%;
+    .cabecalho-tela h2 {
+        font-size: 23px;
     }
-
-}
-/* =========================================
-   ACOMPANHAR ENTREGA
-========================================= */
-
-.area-acompanhar-entrega {
-    width: 100%;
-
-    margin: 25px 0;
-}
-
-
-.card-acompanhar-entrega {
-    width: 100%;
-
-    background-color: #f5f8fd;
-
-    border: 1px solid #d6e3f8;
-
-    border-radius: 10px;
-
-    padding: 20px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-}
-
-
-/* ÍCONE DA ENTREGA */
-
-.icone-entrega {
-    width: 50px;
-    height: 50px;
-
-    background-color: #e3ecfb;
-
-    border-radius: 50%;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    font-size: 25px;
-
-    flex-shrink: 0;
-}
-
-
-/* INFORMAÇÕES */
-
-.informacoes-entrega {
-    flex: 1;
-}
-
-.informacoes-entrega h3 {
-    color: #0d47a1;
-
-    font-size: 17px;
-
-    margin-bottom: 6px;
-}
-
-.informacoes-entrega p {
-    color: #666;
-
-    font-size: 14px;
-
-    margin: 0;
-}
-
-
-/* BOTÃO VISUALIZAR ENTREGA */
-
-.botao-visualizar-entrega {
-    border: none;
-
-    background-color: #0d47a1;
-
-    color: white;
-
-    padding: 11px 16px;
-
-    border-radius: 7px;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-
-    white-space: nowrap;
-}
-
-.botao-visualizar-entrega:hover {
-    background-color: #083575;
-
-    transform: translateY(-1px);
-}
-
-
-/* =========================================
-   RESPONSIVO - ACOMPANHAR ENTREGA
-========================================= */
-
-@media (max-width: 600px) {
 
     .card-acompanhar-entrega {
         flex-direction: column;
@@ -1056,3 +1046,67 @@ body {
     }
 
 }
+
+
+/* =========================================================
+   CELULARES MUITO PEQUENOS
+========================================================= */
+
+@media (max-width: 450px) {
+
+    .barra-lateral {
+        width: 210px;
+    }
+
+    .cabecalho {
+        width: calc(100% - 210px);
+
+        padding: 0 10px;
+    }
+
+    .conteudo {
+        width: calc(100% - 210px);
+
+        margin-left: 210px;
+
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .logo h1 {
+        font-size: 16px;
+    }
+
+    .topo-lateral h2 {
+        font-size: 16px;
+    }
+
+    .item-menu {
+        font-size: 13px;
+
+        padding: 11px;
+    }
+
+    .compras {
+        padding: 15px;
+    }
+
+    .compra {
+        padding: 15px;
+    }
+
+    .informacoes-compra {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 8px;
+    }
+
+    .card-perfil,
+    .card-endereco {
+        padding: 15px;
+    }
+
+}
+

@@ -163,20 +163,29 @@ if (fecharMenu) {
 
 
 /* =========================================
-   BOTÃO USUÁRIO
+   BOTÃO USUÁRIO - SAIR / DESCONECTAR
 ========================================= */
 
 if (botaoUsuario) {
 
     botaoUsuario.addEventListener("click", () => {
 
-        if (barraLateral) {
+        const confirmar = confirm(
+            "Deseja realmente sair da sua conta?"
+        );
 
-            barraLateral.classList.add("aberta");
-
+        if (!confirmar) {
+            return;
         }
 
-        mostrarTela("inicio");
+        // Encerra os dados da sessão
+        sessionStorage.clear();
+
+        // Remove o usuário salvo no navegador
+        localStorage.removeItem("usuarioLogado");
+
+        // Redireciona para a tela de login
+        window.location.href = "../pages/login_cliente.html";
 
     });
 
@@ -702,6 +711,34 @@ if (formEndereco) {
 
         }
     );
+
+}
+/* =========================================
+   BOTÃO USUÁRIO - SAIR / DESCONECTAR
+========================================= */
+
+if (botaoUsuario) {
+
+    botaoUsuario.addEventListener("click", () => {
+
+        const confirmar = confirm(
+            "Deseja realmente sair da sua conta?"
+        );
+
+        if (!confirmar) {
+            return;
+        }
+
+        // Encerra os dados da sessão
+        sessionStorage.clear();
+
+        // Remove o usuário salvo no navegador
+        localStorage.removeItem("usuarioLogado");
+
+        // Vai para a tela de login
+        window.location.href = "pages/login_cliente.html";
+
+    });
 
 }
 
