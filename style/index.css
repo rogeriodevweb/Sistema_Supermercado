@@ -1110,3 +1110,230 @@ body {
 
 }
 
+/*----------------*/
+
+/* =========================================================
+   PRODUTOS - SUPERMERCADO
+========================================================= */
+
+/* TELA DE PRODUTOS */
+
+#telaProdutos {
+    display: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#telaProdutos.ativa {
+    display: block;
+}
+
+/* CABEÇALHO DA TELA */
+
+#telaProdutos .cabecalho-tela {
+    width: 100%;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+#telaProdutos .cabecalho-tela h2 {
+    margin-bottom: 8px;
+    color: #222222;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+#telaProdutos .cabecalho-tela p {
+    color: #666666;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* CARTÃO PRINCIPAL */
+
+#telaProdutos .cartao-produtos {
+    width: 100%;
+    padding: 25px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* TÍTULO DO CARTÃO */
+
+#telaProdutos .cabecalho-produtos {
+    margin-bottom: 22px;
+}
+
+#telaProdutos .cabecalho-produtos h2 {
+    margin-bottom: 8px;
+    color: #222222;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+#telaProdutos .cabecalho-produtos p {
+    color: #666666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* PESQUISA */
+
+#telaProdutos .pesquisa-produtos {
+    width: 100%;
+    margin: 20px 0;
+}
+
+#telaProdutos .pesquisa-produtos input {
+    display: block;
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 15px;
+    box-sizing: border-box;
+
+    background-color: #ffffff;
+    color: #222222;
+
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#telaProdutos .pesquisa-produtos input:focus {
+    border-color: #0A048A;
+    box-shadow: 0 0 0 3px rgba(10, 4, 138, 0.10);
+}
+
+#telaProdutos .pesquisa-produtos input::placeholder {
+    color: #888888;
+}
+
+/* TABELA */
+
+#telaProdutos .tabela-container {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+}
+
+#telaProdutos .tabela-produtos {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    text-align: left;
+}
+
+#telaProdutos .tabela-produtos thead {
+    background-color: #f2effb;
+}
+
+#telaProdutos .tabela-produtos th {
+    padding: 15px 14px;
+    color: #0A048A;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    border-bottom: 1px solid #e1dced;
+}
+
+#telaProdutos .tabela-produtos td {
+    padding: 15px 14px;
+    color: #444444;
+    font-size: 13px;
+    border-bottom: 1px solid #eeeeee;
+    vertical-align: middle;
+}
+
+#telaProdutos .tabela-produtos tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#telaProdutos .tabela-produtos tbody tr:hover {
+    background-color: #faf9ff;
+}
+
+/* MENSAGEM DE TABELA VAZIA */
+
+#telaProdutos .tabela-produtos .mensagem-vazia {
+    padding: 30px 15px;
+    color: #777777;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* MENSAGENS ABAIXO DA TABELA */
+
+#telaProdutos .mensagem-produtos {
+    min-height: 18px;
+    margin-top: 15px;
+    color: #666666;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* RESPONSIVIDADE - TABLET */
+
+@media (max-width: 900px) {
+    #telaProdutos {
+        padding: 20px;
+    }
+
+    #telaProdutos .cartao-produtos {
+        padding: 20px;
+    }
+
+    #telaProdutos .cabecalho-tela h2 {
+        font-size: 25px;
+    }
+}
+
+/* RESPONSIVIDADE - CELULAR */
+
+@media (max-width: 650px) {
+    #telaProdutos {
+        padding: 15px;
+    }
+
+    #telaProdutos .cartao-produtos {
+        padding: 15px;
+    }
+
+    #telaProdutos .cabecalho-tela h2 {
+        font-size: 23px;
+    }
+
+    #telaProdutos .cabecalho-produtos h2 {
+        font-size: 19px;
+    }
+
+    #telaProdutos .pesquisa-produtos input {
+        font-size: 13px;
+    }
+}
+
+/* CELULARES PEQUENOS */
+
+@media (max-width: 450px) {
+    #telaProdutos {
+        padding: 10px;
+    }
+
+    #telaProdutos .cartao-produtos {
+        padding: 12px;
+    }
+
+    #telaProdutos .cabecalho-produtos p,
+    #telaProdutos .cabecalho-tela p {
+        font-size: 13px;
+    }
+}

@@ -60,6 +60,14 @@
                 👤 Meu Perfil
             </button>
 
+            <button
+             type="button"
+             class="item-menu"
+             id="botaoProdutos"
+>
+                 📦 Produtos
+            </button>
+
         </nav>
 
 
@@ -208,6 +216,93 @@
             </section>
 
         </section>
+
+               
+
+                        <!-- TELA PRODUTOS -->
+
+        <section
+            class="tela-central tela-produtos"
+            id="telaProdutos"
+        >
+
+            <div class="cabecalho-tela">
+
+                <h2>Produtos</h2>
+
+                <p>
+                    Confira os produtos disponíveis em nosso supermercado.
+                </p>
+
+            </div>
+
+            <section class="cartao-produtos">
+
+                <div class="cabecalho-produtos">
+
+                    <h2>📦 Produtos disponíveis</h2>
+
+                    <p>
+                        Consulte preços e disponibilidade em estoque.
+                    </p>
+
+                </div>
+
+                <!-- PESQUISA DE PRODUTOS -->
+
+                <div class="pesquisa-produtos">
+
+                    <input
+                        type="search"
+                        id="buscarProduto"
+                        placeholder="🔎 Buscar produto por nome ou código..."
+                        aria-label="Buscar produto por nome ou código"
+                    >
+
+                </div>
+
+                <!-- TABELA DE PRODUTOS -->
+
+                <div class="tabela-container">
+
+                    <table class="tabela-produtos">
+
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Produto</th>
+                                <th>Preço de venda</th>
+                                <th>Estoque</th>
+                                <th>Validade</th>
+                                <th>Situação</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="listaProdutos">
+
+                            <tr>
+                                <td colspan="6" class="mensagem-vazia">
+                                    Carregando produtos...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <p
+                    id="mensagemProdutos"
+                    class="mensagem-produtos"
+                    role="status"
+                    aria-live="polite"
+                ></p>
+
+            </section>
+
+        </section>
+        
 
 
         <!-- TELA PERFIL -->
@@ -431,6 +526,7 @@
 
         </section>
 
+        
 
         <!-- TELA DETALHES DO PEDIDO -->
 

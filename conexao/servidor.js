@@ -33,6 +33,7 @@ app.use(express.static(path.join(__dirname, "..")));
 
 const cadastroClienteController = require("../controller/cadastro_cliente_controller");
 const loginClienteController = require("../controller/login_cliente_controller");
+const perfilClienteController = require("../controller/perfil_cliente_controller");
 
 /* =========================================
    CADASTRO DO CLIENTE
@@ -50,6 +51,18 @@ app.post("/cadastro", (req, res) => {
 app.post("/login", (req, res) => {
     console.log("POST /login recebido");
     loginClienteController.login(req, res);
+});
+
+/* =========================================
+   PERFIL DO CLIENTE
+========================================= */
+
+app.get("/perfil/:id", (req, res) => {
+    perfilClienteController.buscar(req, res);
+});
+
+app.put("/perfil/:id", (req, res) => {
+    perfilClienteController.atualizar(req, res);
 });
 
 /* =========================================
@@ -73,7 +86,17 @@ app.get("/api/status", (req, res) => {
         mensagem: "Sistema Supermercado funcionando!"
     });
 });
+/* =========================================
+   ROTAS - MEU PERFIL
+========================================= */
 
+app.get("/perfil/:id", (req, res) => {
+    perfilClienteController.buscar(req, res);
+});
+
+app.put("/perfil/:id", (req, res) => {
+    perfilClienteController.atualizar(req, res);
+});
 /* =========================================
    INICIAR SERVIDOR
 ========================================= */
@@ -82,4 +105,6 @@ app.listen(PORTA, () => {
     console.log(`Servidor rodando em http://localhost:${PORTA}`);
     console.log("Rota POST /cadastro registrada");
     console.log("Rota POST /login registrada");
+    console.log("Rota GET /perfil/:id registrada");
+    console.log("Rota PUT /perfil/:id registrada");
 });
