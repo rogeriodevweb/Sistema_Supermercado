@@ -1,4 +1,4 @@
-const db = require("../config/database");
+const conexao = require("../conexao/conexao");
 
 const indexModel = {
 

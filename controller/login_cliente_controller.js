@@ -1,24 +1,20 @@
+
 const loginClienteModel = require("../model/login_cliente_model");
+const bcrypt = require("bcrypt");
 
 const loginClienteController = {
-
     login: (req, res) => {
-
         const { email, senha } = req.body;
 
-        // Verificar se os campos foram preenchidos
         if (!email || !senha) {
-
             return res.status(400).json({
                 sucesso: false,
                 mensagem: "E-mail e senha são obrigatórios."
             });
         }
 
-        loginClienteModel.buscarCliente(email, (erro, clientes) => {
-
+        loginClienteModel.buscarCliente(email, async (erro, clientes) => {
             if (erro) {
-
                 console.error("Erro ao realizar login:", erro);
 
                 return res.status(500).json({
@@ -27,9 +23,7 @@ const loginClienteController = {
                 });
             }
 
-            // Cliente não encontrado
             if (clientes.length === 0) {
-
                 return res.status(401).json({
                     sucesso: false,
                     mensagem: "E-mail ou senha incorretos."
@@ -38,28 +32,38 @@ const loginClienteController = {
 
             const cliente = clientes[0];
 
-            // Verificar senha
-            if (cliente.senha !== senha) {
+            try {
+                const senhaCorreta = await bcrypt.compare(
+                    senha,
+                    cliente.senha
+                );
 
-                return res.status(401).json({
+                if (!senhaCorreta) {
+                    return res.status(401).json({
+                        sucesso: false,
+                        mensagem: "E-mail ou senha incorretos."
+                    });
+                }
+
+                return res.status(200).json({
+                    sucesso: true,
+                    mensagem: "Login realizado com sucesso!",
+                    cliente: {
+                        id: cliente.idcliente,
+                        nome: cliente.nome,
+                        email: cliente.email
+                    }
+                });
+            } catch (erroSenha) {
+                console.error("Erro ao verificar senha:", erroSenha);
+
+                return res.status(500).json({
                     sucesso: false,
-                    mensagem: "E-mail ou senha incorretos."
+                    mensagem: "Erro ao verificar a senha."
                 });
             }
-
-            // Login realizado
-            res.status(200).json({
-                sucesso: true,
-                mensagem: "Login realizado com sucesso.",
-                cliente: {
-                    id: cliente.id,
-                    nome: cliente.nome,
-                    email: cliente.email
-                }
-            });
         });
     }
-
 };
 
 module.exports = loginClienteController;

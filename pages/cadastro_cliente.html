@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -30,10 +31,7 @@
 
                 <!-- NOME -->
                 <div class="campo">
-
-                    <label for="nome">
-                        Nome completo
-                    </label>
+                    <label for="nome">Nome completo</label>
 
                     <input
                         type="text"
@@ -41,35 +39,46 @@
                         name="nome"
                         placeholder="Digite seu nome completo"
                         autocomplete="name"
+                        maxlength="200"
                         required
                     >
-
                 </div>
+
                 <!-- CPF -->
                 <div class="campo">
-
-                    <label for="cpf">
-                        CPF
-                    </label>
+                    <label for="cpf">CPF</label>
 
                     <input
                         type="text"
                         id="cpf"
                         name="cpf"
-                        placeholder="Digite seu CPF"
+                        placeholder="000.000.000-00"
                         autocomplete="off"
+                        inputmode="numeric"
+                        maxlength="14"
                         required
                     >
-
                 </div>
 
+                <!-- TELEFONE -->
+                <div class="campo">
+                    <label for="telefone">Telefone</label>
+
+                    <input
+                        type="tel"
+                        id="telefone"
+                        name="telefone"
+                        placeholder="(00) 00000-0000"
+                        autocomplete="tel"
+                        inputmode="tel"
+                        maxlength="15"
+                        required
+                    >
+                </div>
 
                 <!-- E-MAIL -->
                 <div class="campo">
-
-                    <label for="email">
-                        E-mail
-                    </label>
+                    <label for="email">E-mail</label>
 
                     <input
                         type="email"
@@ -77,20 +86,16 @@
                         name="email"
                         placeholder="Digite seu e-mail"
                         autocomplete="email"
+                        maxlength="200"
                         required
                     >
-
                 </div>
 
                 <!-- SENHA -->
                 <div class="campo">
-
-                    <label for="senha">
-                        Senha
-                    </label>
+                    <label for="senha">Senha</label>
 
                     <div class="senha-container">
-
                         <input
                             type="password"
                             id="senha"
@@ -108,20 +113,14 @@
                         >
                             👁
                         </button>
-
                     </div>
-
                 </div>
 
                 <!-- CONFIRMAR SENHA -->
                 <div class="campo">
-
-                    <label for="confirmarSenha">
-                        Confirmar senha
-                    </label>
+                    <label for="confirmarSenha">Confirmar senha</label>
 
                     <div class="senha-container">
-
                         <input
                             type="password"
                             id="confirmarSenha"
@@ -139,12 +138,16 @@
                         >
                             👁
                         </button>
-
                     </div>
-
                 </div>
 
-                <div id="mensagem" class="mensagem"></div>
+                <!-- MENSAGEM -->
+                <div
+                    id="mensagem"
+                    class="mensagem"
+                    role="status"
+                    aria-live="polite"
+                ></div>
 
                 <!-- SALVAR -->
                 <button
@@ -157,19 +160,18 @@
             </form>
 
             <div class="login-link">
-
                 <span>Já possui uma conta?</span>
 
                 <a href="../pages/login_cliente.html">
                     Entrar
                 </a>
-
             </div>
 
         </section>
 
     </main>
 
+    <!-- JAVASCRIPT EXTERNO -->
     <script src="../js/cadastro_cliente.js"></script>
 
 </body>

@@ -29,7 +29,7 @@ body {
 
     padding: 20px 7%;
 
-    background: #5907f1;
+    background: #0A048A;
     border-bottom: 1px solid #e5e7eb;
 }
 
@@ -78,7 +78,7 @@ body {
     gap: 6px;
 
     background-color: white;
-    color: #0b2d5c;
+    color: #0A048A;
 
     border: 1px solid #d9e0e8;
     border-radius: 6px;
@@ -140,7 +140,7 @@ body {
     align-items: center;
     justify-content: center;
 
-    background: #2563eb;
+    background: #0A048A;
 
     border-radius: 12px;
 
@@ -193,7 +193,7 @@ body {
 }
 
 .campo-busca input:focus {
-    border-color: #2563eb;
+    border-color: #0A048A;
 }
 
 .campo-busca button {
@@ -202,7 +202,7 @@ body {
     border: none;
     border-radius: 0 8px 8px 0;
 
-    background: #2563eb;
+    background: #0A048A;
     color: #ffffff;
 
     font-weight: bold;
@@ -213,7 +213,7 @@ body {
 }
 
 .campo-busca button:hover {
-    background: #1d4ed8;
+    background: #0A048A;
 }
 
 #mensagemBusca {
@@ -288,7 +288,7 @@ body {
 
 .status.entregue {
     background: #dbeafe;
-    color: #1d4ed8;
+    color: #0A048A;
 }
 
 .status.finalizado {
@@ -410,17 +410,17 @@ body {
 }
 
 .timeline-item.concluido .timeline-icon {
-    background: #2563eb;
+    background: #0A048A;
 
-    border-color: #2563eb;
+    border-color: #0A048A;
 
     color: #ffffff;
 }
 
 .timeline-item.ativo .timeline-icon {
-    background: #2563eb;
+    background: #0A048A;
 
-    border-color: #60a5fa;
+    border-color: #0A048A;
 
     color: #ffffff;
 

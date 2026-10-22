@@ -33,7 +33,7 @@ body {
     width: calc(100% - 320px);
     height: 70px;
 
-    background-color: #5907f1;
+    background-color: #0A048A;
 
     display: flex;
     align-items: center;
@@ -74,7 +74,7 @@ body {
     border: none;
 
     background-color: #ffffff;
-    color: #5907f1;
+    color: #0A048A;
 
     padding: 10px 16px;
 
@@ -135,7 +135,7 @@ body {
     width: 100%;
     height: 70px;
 
-    background-color: #5907f1;
+    background-color: #0A048A;
     color: #ffffff;
 
     display: flex;
@@ -226,12 +226,12 @@ body {
 
 .item-menu:hover {
     background-color: #f0e8ff;
-    color: #5907f1;
+    color: #0A048A;
 }
 
 .item-menu.ativo {
     background-color: #eee2ff;
-    color: #5907f1;
+    color: #0A048A;
 }
 
 
@@ -245,7 +245,7 @@ body {
 
 .conteudo-lateral h2 {
     font-size: 21px;
-    color: #5907f1;
+    color: #0A048A;
 
     margin-bottom: 20px;
 }
@@ -332,9 +332,9 @@ body {
 #formPerfil select:focus,
 #formPerfilCentral select:focus,
 #formEndereco select:focus {
-    border-color: #5907f1;
+    border-color: #0A048A;
 
-    box-shadow: 0 0 0 2px rgba(89, 7, 241, 0.10);
+    box-shadow: 0 0 0 2px rgba(10, 4, 138, 0.10);
 }
 
 #formPerfil select,
@@ -359,7 +359,7 @@ body {
 
     border-radius: 8px;
 
-    background-color: #5907f1;
+    background-color: #0A048A;
     color: #ffffff;
 
     font-family: inherit;
@@ -373,7 +373,7 @@ body {
 }
 
 .botao-salvar:hover {
-    background-color: #4605c4;
+    background-color: #0A048A;
     transform: translateY(-1px);
 }
 
@@ -504,7 +504,7 @@ body {
 }
 
 .compra:hover {
-    border-color: #5907f1;
+    border-color: #0A048A;
 
     background-color: #faf8ff;
 
@@ -698,7 +698,7 @@ body {
 }
 
 .pedido-central:hover {
-    border-color: #5907f1;
+    border-color: #0A048A;
 
     background-color: #faf8ff;
 }
@@ -714,7 +714,7 @@ body {
 }
 
 .pedido-central strong {
-    color: #5907f1;
+    color: #0A048A;
 
     font-size: 17px;
 }
@@ -729,7 +729,7 @@ body {
 
     background-color: #eee2ff;
 
-    color: #5907f1;
+    color: #0A048A;
 
     padding: 10px 14px;
 
@@ -766,7 +766,7 @@ body {
 }
 
 #detalhesPedido h3 {
-    color: #5907f1;
+    color: #0A048A;
 
     font-size: 17px;
 
@@ -788,13 +788,13 @@ body {
 
     padding-top: 15px;
 
-    border-top: 2px solid #5907f1;
+    border-top: 2px solid #0A048A;
 
     font-size: 18px;
 
     font-weight: bold;
 
-    color: #5907f1;
+    color: #0A048A;
 }
 
 
@@ -861,7 +861,7 @@ body {
 }
 
 .informacoes-entrega h3 {
-    color: #0d47a1;
+    color: #0A048A;
 
     font-size: 17px;
 
@@ -884,7 +884,7 @@ body {
 .botao-visualizar-entrega {
     border: none;
 
-    background-color: #0d47a1;
+    background-color: #0A048A;
 
     color: #ffffff;
 
@@ -908,7 +908,7 @@ body {
 }
 
 .botao-visualizar-entrega:hover {
-    background-color: #083575;
+    background-color: #0A048A;
 
     transform: translateY(-1px);
 }

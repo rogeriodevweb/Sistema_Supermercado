@@ -1,12 +1,11 @@
-const db = require("../config/database");
+
+const db = require("../conexao/conexao");
 
 const loginClienteModel = {
-
     buscarCliente: (email, callback) => {
-
         const sql = `
             SELECT
-                id,
+                idcliente,
                 nome,
                 email,
                 senha
@@ -17,7 +16,6 @@ const loginClienteModel = {
 
         db.query(sql, [email], callback);
     }
-
 };
 
 module.exports = loginClienteModel;

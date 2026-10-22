@@ -1,0 +1,50 @@
+[1mdiff --git a/routs/home_cliente_rotas.js b/routs/home_cliente_rotas.js[m
+[1mdeleted file mode 100644[m
+[1mindex 5b9e2c1..0000000[m
+[1m--- a/routs/home_cliente_rotas.js[m
+[1m+++ /dev/null[m
+[36m@@ -1,24 +0,0 @@[m
+[31m-const express = require("express");[m
+[31m-[m
+[31m-const router = express.Router();[m
+[31m-[m
+[31m-const indexController = require("../controller/js/index");[m
+[31m-[m
+[31m-router.get("/", indexController.inicio);[m
+[31m-[m
+[31m-router.get([m
+[31m-    "/pedidos",[m
+[31m-    indexController.listarPedidos[m
+[31m-);[m
+[31m-[m
+[31m-router.get([m
+[31m-    "/pedidos/entrega",[m
+[31m-    indexController.listarPedidosEntrega[m
+[31m-);[m
+[31m-[m
+[31m-router.get([m
+[31m-    "/pedidos/:id",[m
+[31m-    indexController.buscarPedido[m
+[31m-);[m
+[31m-[m
+[31m-module.exports = router;[m
+\ No newline at end of file[m
+[1mdiff --git a/routs/login_cliente_rotas.js b/routs/login_cliente_rotas.js[m
+[1mdeleted file mode 100644[m
+[1mindex 8dfd911..0000000[m
+[1m--- a/routs/login_cliente_rotas.js[m
+[1m+++ /dev/null[m
+[36m@@ -1,12 +0,0 @@[m
+[31m-const express = require("express");[m
+[31m-[m
+[31m-const router = express.Router();[m
+[31m-[m
+[31m-const loginClienteController = require("../controller/login_cliente_controller");[m
+[31m-[m
+[31m-router.post([m
+[31m-    "/login",[m
+[31m-    loginClienteController.login[m
+[31m-);[m
+[31m-[m
+[31m-module.exports = router;[m
+\ No newline at end of file[m

@@ -1,4 +1,4 @@
-const indexModel = require("../../model/index_model");
+const indexModel = require("../model/home_cliente_model.js");
 
 const indexController = {
 

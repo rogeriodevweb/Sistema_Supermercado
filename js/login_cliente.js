@@ -1,3 +1,4 @@
+
 /* =========================================
    LOGIN DO CLIENTE
 ========================================= */
@@ -9,146 +10,107 @@ const mostrarSenha = document.getElementById("mostrarSenha");
 const mensagem = document.getElementById("mensagem");
 const botaoLogin = document.querySelector(".btn-login");
 
+// Endereço do servidor
+const API_URL = "http://localhost:3000";
+
 
 /* =========================================
    MOSTRAR / OCULTAR SENHA
 ========================================= */
 
-mostrarSenha.addEventListener("click", () => {
-
-    if (senhaInput.type === "password") {
-
-        senhaInput.type = "text";
-
-        mostrarSenha.textContent = "🙈";
-
-    } else {
-
-        senhaInput.type = "password";
-
-        mostrarSenha.textContent = "👁";
-    }
-
-});
+if (mostrarSenha && senhaInput) {
+    mostrarSenha.addEventListener("click", () => {
+        if (senhaInput.type === "password") {
+            senhaInput.type = "text";
+            mostrarSenha.textContent = "🙈";
+        } else {
+            senhaInput.type = "password";
+            mostrarSenha.textContent = "👁";
+        }
+    });
+}
 
 
 /* =========================================
-   LOGIN
+   LOGIN DO CLIENTE
 ========================================= */
 
-loginForm.addEventListener("submit", async (event) => {
+if (loginForm) {
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-    event.preventDefault();
+        const email = emailInput.value.trim();
+        const senha = senhaInput.value;
 
-    const email = emailInput.value.trim();
-    const senha = senhaInput.value;
+        mensagem.textContent = "";
+        mensagem.className = "mensagem";
 
-    mensagem.textContent = "";
-    mensagem.className = "mensagem";
-
-
-    /* -----------------------------------------
-       VALIDAÇÃO
-    ----------------------------------------- */
-
-    if (!email || !senha) {
-
-        mensagem.textContent =
-            "Preencha o e-mail e a senha.";
-
-        mensagem.classList.add("erro");
-
-        return;
-    }
-
-
-    /* -----------------------------------------
-       DESABILITAR BOTÃO
-    ----------------------------------------- */
-
-    botaoLogin.disabled = true;
-
-    botaoLogin.textContent = "Entrando...";
-
-
-    try {
-
-        const resposta = await fetch("/login", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                email: email,
-                senha: senha
-            })
-
-        });
-
-
-        const dados = await resposta.json();
-
-
-        /* -----------------------------------------
-           ERRO
-        ----------------------------------------- */
-
-        if (!resposta.ok) {
-
-            mensagem.textContent =
-                dados.mensagem || "E-mail ou senha incorretos.";
-
+        /* Validação */
+        if (!email || !senha) {
+            mensagem.textContent = "Preencha o e-mail e a senha.";
             mensagem.classList.add("erro");
-
             return;
         }
 
+        /* Desabilitar botão */
+        if (botaoLogin) {
+            botaoLogin.disabled = true;
+            botaoLogin.textContent = "Entrando...";
+        }
 
-        /* -----------------------------------------
-           LOGIN REALIZADO
-        ----------------------------------------- */
+        try {
+            const resposta = await fetch(`${API_URL}/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    senha: senha
+                })
+            });
 
-        mensagem.textContent =
-            "Login realizado com sucesso!";
+            const dados = await resposta.json();
 
-        mensagem.classList.add("sucesso");
+            /* Tratar falha no login */
+            if (!resposta.ok || !dados.sucesso) {
+                mensagem.textContent =
+                    dados.mensagem || "E-mail ou senha incorretos.";
 
+                mensagem.classList.add("erro");
+                return;
+            }
 
-        // Salvar informações básicas do cliente
-        localStorage.setItem(
-            "cliente",
-            JSON.stringify(dados.cliente)
-        );
+            /* Login realizado */
+            mensagem.textContent = "Login realizado com sucesso!";
+            mensagem.classList.add("sucesso");
 
+            /* Salvar dados do cliente */
+            localStorage.setItem(
+                "cliente",
+                JSON.stringify(dados.cliente)
+            );
 
-        /* -----------------------------------------
-           REDIRECIONAR
-        ----------------------------------------- */
+            /* Redirecionar para a página inicial */
+            setTimeout(() => {
+                window.location.href = "/Sistema_Supermecado/index.html";
+            }, 1000);
 
-        setTimeout(() => {
+        } catch (erro) {
+            console.error("Erro ao realizar login:", erro);
 
-            window.location.href = "index.html";
+            mensagem.textContent =
+                "Não foi possível conectar ao servidor. Verifique se ele está ligado.";
 
-        }, 1000);
+            mensagem.classList.add("erro");
 
-
-    } catch (erro) {
-
-        console.error("Erro:", erro);
-
-        mensagem.textContent =
-            "Não foi possível conectar ao servidor.";
-
-        mensagem.classList.add("erro");
-
-    } finally {
-
-        botaoLogin.disabled = false;
-
-        botaoLogin.textContent = "Entrar";
-    }
-
-});
+        } finally {
+            if (botaoLogin) {
+                botaoLogin.disabled = false;
+                botaoLogin.textContent = "Entrar";
+            }
+        }
+    });
+} else {
+    console.error('Formulário com ID "loginForm" não encontrado.');
+}

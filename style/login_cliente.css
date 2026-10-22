@@ -79,7 +79,7 @@ body {
     justify-content: center;
     align-items: center;
 
-    background: #2563eb;
+    background: #0A048A;
 
     border-radius: 50%;
 
@@ -153,9 +153,9 @@ body {
 
 
 .campo input:focus {
-    border-color: #2563eb;
+    border-color: #0A048A;
 
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    box-shadow: 0 0 0 3px rgba(10, 4, 138, 0.12);
 }
 
 
@@ -231,7 +231,7 @@ body {
 
     border-radius: 9px;
 
-    background: #2563eb;
+    background: #0A048A;
 
     color: #ffffff;
 
@@ -246,7 +246,7 @@ body {
 
 
 .btn-login:hover {
-    background: #1d4ed8;
+    background: #0A048A;
 }
 
 
@@ -282,7 +282,7 @@ body {
 
 
 .cadastro a {
-    color: #2563eb;
+    color: #0A048A;
 
     font-weight: 600;
 
@@ -313,7 +313,7 @@ body {
 
 
 .voltar:hover {
-    color: #2563eb;
+    color: #0A048A;
 }
 
 
