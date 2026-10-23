@@ -1,22 +1,25 @@
+
 const indexModel = require("../model/home_cliente_model.js");
 
 const indexController = {
-
     inicio: (req, res) => {
-
         res.status(200).json({
             mensagem: "Sistema do supermercado funcionando."
         });
     },
 
     listarPedidos: (req, res) => {
+        const clienteId = Number(req.params.clienteId);
 
-        indexModel.listarPedidos((erro, pedidos) => {
+        if (!Number.isInteger(clienteId) || clienteId <= 0) {
+            return res.status(400).json({
+                erro: "ID do cliente inválido."
+            });
+        }
 
+        indexModel.listarPedidos(clienteId, (erro, pedidos) => {
             if (erro) {
-
                 console.error("Erro ao buscar pedidos:", erro);
-
                 return res.status(500).json({
                     erro: "Erro ao buscar os pedidos."
                 });
@@ -27,16 +30,17 @@ const indexController = {
     },
 
     listarPedidosEntrega: (req, res) => {
+        const clienteId = Number(req.params.clienteId);
 
-        indexModel.listarPedidosEntrega((erro, pedidos) => {
+        if (!Number.isInteger(clienteId) || clienteId <= 0) {
+            return res.status(400).json({
+                erro: "ID do cliente inválido."
+            });
+        }
 
+        indexModel.listarPedidosEntrega(clienteId, (erro, pedidos) => {
             if (erro) {
-
-                console.error(
-                    "Erro ao buscar pedidos para entrega:",
-                    erro
-                );
-
+                console.error("Erro ao buscar pedidos para entrega:", erro);
                 return res.status(500).json({
                     erro: "Erro ao buscar pedidos para entrega."
                 });
@@ -47,29 +51,38 @@ const indexController = {
     },
 
     buscarPedido: (req, res) => {
+        const clienteId = Number(req.params.clienteId);
+        const pedidoId = Number(req.params.id);
 
-        const { id } = req.params;
+        if (
+            !Number.isInteger(clienteId) || clienteId <= 0 ||
+            !Number.isInteger(pedidoId) || pedidoId <= 0
+        ) {
+            return res.status(400).json({
+                erro: "ID do cliente ou do pedido inválido."
+            });
+        }
 
-        indexModel.buscarPedido(id, (erro, pedido) => {
+        indexModel.buscarPedido(
+            pedidoId,
+            clienteId,
+            (erro, pedidos) => {
+                if (erro) {
+                    console.error("Erro ao buscar pedido:", erro);
+                    return res.status(500).json({
+                        erro: "Erro ao buscar o pedido."
+                    });
+                }
 
-            if (erro) {
+                if (pedidos.length === 0) {
+                    return res.status(404).json({
+                        erro: "Pedido não encontrado."
+                    });
+                }
 
-                console.error("Erro ao buscar pedido:", erro);
-
-                return res.status(500).json({
-                    erro: "Erro ao buscar o pedido."
-                });
+                res.status(200).json(pedidos[0]);
             }
-
-            if (pedido.length === 0) {
-
-                return res.status(404).json({
-                    erro: "Pedido não encontrado."
-                });
-            }
-
-            res.status(200).json(pedido[0]);
-        });
+        );
     }
 };
 

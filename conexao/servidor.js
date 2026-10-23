@@ -36,6 +36,14 @@ const loginClienteController = require("../controller/login_cliente_controller")
 const perfilClienteController = require("../controller/perfil_cliente_controller");
 
 /* =========================================
+   ROTAS - PEDIDOS E ENTREGAS DO CLIENTE
+========================================= */
+
+const homeClienteRotas = require("../routs/home_cliente_rotas");
+
+app.use("/", homeClienteRotas);
+
+/* =========================================
    CADASTRO DO CLIENTE
 ========================================= */
 
@@ -97,6 +105,51 @@ app.get("/perfil/:id", (req, res) => {
 app.put("/perfil/:id", (req, res) => {
     perfilClienteController.atualizar(req, res);
 });
+
+
+/* =========================================
+   ROTAS - LISTAR PRODUTOS
+========================================= */
+
+app.get("/api/produtos", (req, res) => {
+    const sql = `
+        SELECT
+            p.idprodutos,
+            p.nome,
+            p.codigo,
+            p.descricao,
+            p.precoCusto,
+            p.precoVenda,
+            p.situacao,
+            p.estoque,
+            p.validade,
+            c.nome AS categoria,
+            m.nome AS marca,
+            u.nome AS unidade
+        FROM produtos p
+        LEFT JOIN categorias c
+            ON p.categorias_idcategorias = c.idcategorias
+        LEFT JOIN marcas m
+            ON p.marcas_idmarcas = m.idmarcas
+        LEFT JOIN unidadeMedidas u
+            ON p.unidadeMedidas_idunidadeMedidas = u.idunidadeMedidas
+        ORDER BY p.idprodutos DESC
+    `;
+
+    conexao.query(sql, (erro, resultados) => {
+        if (erro) {
+            console.error("Erro ao buscar produtos:", erro);
+
+            return res.status(500).json({
+                sucesso: false,
+                mensagem: "Erro ao buscar produtos no banco de dados."
+            });
+        }
+
+        return res.json(resultados);
+    });
+});
+
 /* =========================================
    INICIAR SERVIDOR
 ========================================= */
@@ -308,6 +361,107 @@ app.post("/endereco", (req, res) => {
         }
     );
 });
+
+
+app.get("/api/pedidos/:codigo", (req, res) => {
+    const codigo = req.params.codigo;
+
+    const sql = `
+        SELECT
+            p.idpedidos,
+            p.numeroPedido,
+            p.datapedido,
+            p.statusPedido,
+            e.dataEntrega,
+            e.horarioEntrega,
+            e.statusEntrega,
+            c.nome AS nomeDestinatario,
+
+            en.rua,
+            en.numero,
+            en.complemento,
+            en.bairro,
+            en.cidade,
+            en.estado,
+            en.cep,
+
+            pr.nome AS nomeProduto,
+            ip.quantidade
+
+        FROM pedidos p
+
+        LEFT JOIN entregas e
+            ON e.identregas = p.entregas_identregas
+
+        LEFT JOIN cliente c
+            ON c.idcliente = p.cliente_idcliente
+
+        LEFT JOIN endereco en
+            ON en.idEndereco = (
+                SELECT en2.idEndereco
+                FROM endereco en2
+                WHERE en2.cliente_idcliente = p.cliente_idcliente
+                ORDER BY en2.idEndereco DESC
+                LIMIT 1
+            )
+
+        LEFT JOIN itenspedidos ip
+            ON ip.pedidos_idpedidos = p.idpedidos
+
+        LEFT JOIN produtos pr
+            ON pr.idprodutos = ip.produtos_idprodutos
+
+        WHERE p.numeroPedido = ?
+    `;
+
+    conexao.query(sql, [codigo], (erro, resultados) => {
+        if (erro) {
+            console.error("Erro ao buscar pedido:", erro);
+            return res.status(500).json({
+                erro: "Erro ao consultar o pedido."
+            });
+        }
+
+        if (resultados.length === 0) {
+            return res.status(404).json({
+                erro: "Pedido não encontrado."
+            });
+        }
+
+        const pedido = resultados[0];
+
+        const produtos = resultados
+            .filter(item => item.nomeProduto !== null)
+            .map(item => ({
+                nome: item.nomeProduto,
+                quantidade: item.quantidade
+            }));
+
+        const endereco = [
+            pedido.rua,
+            pedido.numero,
+            pedido.complemento
+        ].filter(Boolean).join(", ");
+
+        res.json({
+            numero: pedido.numeroPedido,
+            status: pedido.statusEntrega || pedido.statusPedido,
+            statusPedido: pedido.statusPedido,
+            statusEntrega: pedido.statusEntrega,
+            previsao: pedido.dataEntrega || "",
+            horarioEntrega: pedido.horarioEntrega || "",
+            dataPedido: pedido.datapedido,
+            destinatario: pedido.nomeDestinatario || "",
+            endereco: endereco,
+            bairro: pedido.bairro || "",
+            cidade: [pedido.cidade, pedido.estado]
+                .filter(Boolean).join(" - "),
+            cep: pedido.cep || "",
+            produtos: produtos
+        });
+    });
+});
+
 
 app.listen(PORTA, () => {
     console.log(`Servidor rodando em http://localhost:${PORTA}`);

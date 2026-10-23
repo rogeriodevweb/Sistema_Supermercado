@@ -1,4 +1,3 @@
-
 /* =========================================
    ELEMENTOS
 ========================================= */
@@ -18,32 +17,25 @@ const detalhesPedido = document.getElementById("detalhesPedido");
 const formPerfilCentral = document.getElementById("formPerfilCentral");
 const formEndereco = document.getElementById("formEndereco");
 
-/* =========================================
-   TELAS CENTRAIS
-========================================= */
-
 const telaInicio = document.getElementById("telaInicio");
 const telaPerfil = document.getElementById("telaPerfil");
 const telaDetalhes = document.getElementById("telaDetalhes");
 const telaEndereco = document.getElementById("telaEndereco");
 const telaProdutos = document.getElementById("telaProdutos");
 
-/* =========================================
-   ELEMENTOS DA TELA DE PRODUTOS
-========================================= */
-
 const listaProdutos = document.getElementById("listaProdutos");
 const buscarProduto = document.getElementById("buscarProduto");
 const mensagemProdutos = document.getElementById("mensagemProdutos");
+const listaCompras = document.getElementById("listaCompras");
 
 const API_PERFIL = "http://localhost:3000";
-const API_PRODUTOS = "http://localhost:3000/api/produtos";
+const API_PRODUTOS = `${API_PERFIL}/api/produtos`;
 
 let produtosCarregados = [];
 let produtosCarregando = false;
 
 /* =========================================
-   MOSTRAR TELA CENTRAL
+   MOSTRAR TELAS
 ========================================= */
 
 function mostrarTela(tela) {
@@ -132,7 +124,7 @@ function mostrarTela(tela) {
 }
 
 /* =========================================
-   BOTÃO FECHAR MENU
+   FECHAR MENU E SAIR
 ========================================= */
 
 if (fecharMenu) {
@@ -143,19 +135,13 @@ if (fecharMenu) {
     });
 }
 
-/* =========================================
-   BOTÃO USUÁRIO - SAIR
-========================================= */
-
 if (botaoUsuario) {
     botaoUsuario.addEventListener("click", () => {
         const confirmar = confirm(
             "Deseja realmente sair da sua conta?"
         );
 
-        if (!confirmar) {
-            return;
-        }
+        if (!confirmar) return;
 
         sessionStorage.clear();
 
@@ -167,7 +153,7 @@ if (botaoUsuario) {
 }
 
 /* =========================================
-   BOTÃO INÍCIO / MINHAS COMPRAS
+   NAVEGAÇÃO LATERAL
 ========================================= */
 
 if (botaoInicio) {
@@ -176,20 +162,12 @@ if (botaoInicio) {
     });
 }
 
-/* =========================================
-   BOTÃO MEU ENDEREÇO
-========================================= */
-
 if (botaoEndereco) {
     botaoEndereco.addEventListener("click", () => {
         mostrarTela("endereco");
         carregarEndereco();
     });
 }
-
-/* =========================================
-   BOTÃO MEU PERFIL
-========================================= */
 
 if (botaoPerfil) {
     botaoPerfil.addEventListener("click", () => {
@@ -198,181 +176,11 @@ if (botaoPerfil) {
     });
 }
 
-/* =========================================
-   BOTÃO PRODUTOS
-========================================= */
-
 if (botaoProdutos) {
     botaoProdutos.addEventListener("click", () => {
         mostrarTela("produtos");
     });
 }
-
-/* =========================================
-   DADOS DOS PEDIDOS
-========================================= */
-
-const pedidos = {
-    "001": {
-        numero: "001",
-        data: "15/09/2026",
-        total: "125,90",
-        status: "Concluída",
-        pagamento: "Cartão de crédito",
-        endereco: "Endereço cadastrado",
-        produtos: [
-            {
-                nome: "Arroz 5kg",
-                quantidade: 1,
-                preco: "25,90"
-            },
-            {
-                nome: "Feijão 1kg",
-                quantidade: 2,
-                preco: "8,00"
-            },
-            {
-                nome: "Produtos diversos",
-                quantidade: 1,
-                preco: "84,00"
-            }
-        ]
-    },
-
-    "002": {
-        numero: "002",
-        data: "10/09/2026",
-        total: "87,50",
-        status: "Concluída",
-        pagamento: "Pix",
-        endereco: "Endereço cadastrado",
-        produtos: [
-            {
-                nome: "Produtos diversos",
-                quantidade: 1,
-                preco: "87,50"
-            }
-        ]
-    }
-};
-
-/* =========================================
-   ABRIR DETALHES DO PEDIDO
-========================================= */
-
-function abrirDetalhes(numeroPedido) {
-    const pedido = pedidos[numeroPedido];
-
-    if (!pedido) {
-        if (detalhesPedido) {
-            detalhesPedido.innerHTML = `
-                <p>Pedido não encontrado.</p>
-            `;
-        }
-
-        mostrarTela("detalhes");
-        return;
-    }
-
-    let produtosHTML = "";
-
-    pedido.produtos.forEach(produto => {
-        produtosHTML += `
-            <div class="item-produto">
-                <strong>${escaparHTML(produto.nome)}</strong>
-
-                <p>Quantidade: ${produto.quantidade}</p>
-
-                <p>Preço: R$ ${escaparHTML(produto.preco)}</p>
-            </div>
-        `;
-    });
-
-    if (detalhesPedido) {
-        detalhesPedido.innerHTML = `
-            <h3>Compra #${pedido.numero}</h3>
-
-            <p>
-                <strong>Data:</strong>
-                ${escaparHTML(pedido.data)}
-            </p>
-
-            <p>
-                <strong>Status:</strong>
-                ${escaparHTML(pedido.status)}
-            </p>
-
-            <p>
-                <strong>Pagamento:</strong>
-                ${escaparHTML(pedido.pagamento)}
-            </p>
-
-            <p>
-                <strong>Endereço:</strong>
-                ${escaparHTML(pedido.endereco)}
-            </p>
-
-            <div class="area-acompanhar-entrega">
-                <div class="card-acompanhar-entrega">
-                    <div class="icone-entrega">🚚</div>
-
-                    <div class="informacoes-entrega">
-                        <h3>Acompanhar entrega</h3>
-                        <p>Seu pedido está a caminho.</p>
-                    </div>
-
-                    <button
-                        type="button"
-                        class="botao-visualizar-entrega"
-                        onclick="window.location.href='pages/acompanhar_entrega.html'"
-                    >
-                        Visualizar entrega
-                    </button>
-                </div>
-            </div>
-
-            <h3>Produtos comprados</h3>
-
-            ${produtosHTML}
-
-            <div class="total-pedido">
-                Total: R$ ${escaparHTML(pedido.total)}
-            </div>
-        `;
-    }
-
-    mostrarTela("detalhes");
-}
-
-/* =========================================
-   CLIQUE NAS COMPRAS
-========================================= */
-
-const compras = document.querySelectorAll(".compra");
-
-compras.forEach(compra => {
-    compra.addEventListener("click", () => {
-        const numeroPedido = compra.dataset.pedido;
-        abrirDetalhes(numeroPedido);
-    });
-});
-
-/* =========================================
-   CLIQUE NOS PEDIDOS DO CENTRO
-========================================= */
-
-const pedidosCentrais = document.querySelectorAll(".pedido-central");
-
-pedidosCentrais.forEach(pedido => {
-    pedido.addEventListener("click", () => {
-        const numeroPedido = pedido.dataset.pedido;
-        abrirDetalhes(numeroPedido);
-    });
-});
-
-/* =========================================
-   VOLTAR PARA MINHAS COMPRAS
-========================================= */
 
 if (voltartelaInicio) {
     voltartelaInicio.addEventListener("click", () => {
@@ -381,6 +189,332 @@ if (voltartelaInicio) {
 }
 
 /* =========================================
+   FUNÇÕES AUXILIARES
+========================================= */
+
+function escaparHTML(valor) {
+    return String(valor ?? "").replace(/[&<>"']/g, caractere => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[caractere]);
+}
+
+function formatarDataPedido(data) {
+    if (!data) {
+        return "Data não informada";
+    }
+
+    const dataObjeto = new Date(data);
+
+    if (Number.isNaN(dataObjeto.getTime())) {
+        return String(data);
+    }
+
+    return dataObjeto.toLocaleDateString("pt-BR");
+}
+
+function formatarValorPedido(valor) {
+    return Number(valor || 0).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
+}
+/* =========================================
+   TELA INICIAL - LISTA DE PRODUTOS
+========================================= */
+
+async function carregarMinhasCompras() {
+    if (!listaCompras) return;
+
+    listaCompras.innerHTML =
+        "<p>Carregando produtos disponíveis...</p>";
+
+    try {
+        const resposta = await fetch(API_PRODUTOS);
+        const dados = await resposta.json();
+
+        if (!resposta.ok) {
+            throw new Error(
+                dados.mensagem || "Erro ao carregar produtos."
+            );
+        }
+
+        const produtos = Array.isArray(dados)
+            ? dados
+            : Array.isArray(dados.produtos)
+                ? dados.produtos
+                : [];
+
+        const disponiveis = produtos.filter(produto =>
+            Number(produto.situacao) === 1 &&
+            Number(produto.estoque) > 0
+        );
+
+        if (disponiveis.length === 0) {
+            listaCompras.innerHTML =
+                "<p>Nenhum produto disponível no momento.</p>";
+            return;
+        }
+
+        listaCompras.innerHTML = disponiveis.map(produto => `
+            <article class="card-produto-compra">
+                <div class="produto-compra-icone">🛒</div>
+
+                <div class="produto-compra-info">
+                    <h3>${escaparHTML(produto.nome || "Produto")}</h3>
+
+                    <p>
+                        Código:
+                        ${escaparHTML(produto.codigo || "-")}
+                    </p>
+
+                    <strong>
+                        ${formatarValorPedido(produto.precoVenda)}
+                    </strong>
+
+                    <p>
+                        Estoque: ${Number(produto.estoque)} unidades
+                    </p>
+
+                    <button
+                        type="button"
+                        class="botao-ver-detalhes"
+                        data-produto-id="${Number(produto.idprodutos)}">
+                        Visualizar informações
+                    </button>
+                </div>
+            </article>
+        `).join("");
+
+        listaCompras
+            .querySelectorAll(".botao-ver-detalhes")
+            .forEach(botao => {
+                botao.addEventListener("click", () => {
+                    abrirDetalhesProduto(
+                        Number(botao.dataset.produtoId)
+                    );
+                });
+            });
+
+    } catch (erro) {
+        console.error("Erro ao carregar produtos:", erro);
+
+        listaCompras.innerHTML = `
+            <p>
+                Não foi possível carregar os produtos.
+                Verifique se o servidor está ligado.
+            </p>
+        `;
+    }
+}
+
+/* =========================================
+   DETALHES DO PRODUTO
+========================================= */
+
+function abrirDetalhesProduto(produtoId) {
+    const produto = produtosCarregados.find(item =>
+        Number(item.idprodutos) === Number(produtoId)
+    );
+
+    if (!produto) {
+        alert("Produto não encontrado. Tente novamente.");
+        return;
+    }
+
+    function preencherCampo(id, valor) {
+        const elemento = document.getElementById(id);
+
+        if (elemento) {
+            elemento.textContent =
+                valor === null ||
+                valor === undefined ||
+                valor === ""
+                    ? "-"
+                    : String(valor);
+        }
+    }
+
+    preencherCampo(
+        "detalheNomeProduto",
+        produto.nome || "Produto"
+    );
+
+    preencherCampo("detalheCodigo", produto.codigo);
+    preencherCampo("detalheDescricao", produto.descricao);
+
+    preencherCampo(
+        "detalhePreco",
+        formatarValorPedido(produto.precoVenda)
+    );
+
+    preencherCampo("detalheEstoque", produto.estoque);
+    preencherCampo("detalheCategoria", produto.categoria);
+    preencherCampo("detalheMarca", produto.marca);
+
+    mostrarTela("detalhes");
+}
+
+/* =========================================
+   DETALHES DE UM PEDIDO
+   Consulta a rota do servidor:
+   GET /api/pedidos/:codigo
+========================================= */
+
+async function abrirDetalhes(numeroPedido) {
+    if (!numeroPedido) {
+        alert("O número do pedido não foi informado.");
+        return;
+    }
+
+    try {
+        const resposta = await fetch(
+            `${API_PERFIL}/api/pedidos/${encodeURIComponent(numeroPedido)}`
+        );
+
+        const pedido = await resposta.json();
+
+        if (!resposta.ok) {
+            alert(
+                pedido.erro ||
+                "Não foi possível encontrar esse pedido."
+            );
+            return;
+        }
+
+        if (!detalhesPedido) {
+            alert(
+                "O elemento de detalhes do pedido não foi encontrado no HTML."
+            );
+            return;
+        }
+
+        const produtosHTML = (pedido.produtos || [])
+            .map(produto => `
+                <div class="item-produto">
+                    <strong>
+                        ${escaparHTML(produto.nome || "Produto")}
+                    </strong>
+
+                    <p>
+                        Quantidade:
+                        ${escaparHTML(produto.quantidade ?? "-")}
+                    </p>
+                </div>
+            `)
+            .join("");
+
+        detalhesPedido.innerHTML = `
+            <h3>
+                Pedido #${escaparHTML(pedido.numero || numeroPedido)}
+            </h3>
+
+            <p>
+                <strong>Data:</strong>
+                ${escaparHTML(formatarDataPedido(pedido.dataPedido))}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                ${escaparHTML(pedido.status || "Não informado")}
+            </p>
+
+            <p>
+                <strong>Destinatário:</strong>
+                ${escaparHTML(pedido.destinatario || "-")}
+            </p>
+
+            <p>
+                <strong>Endereço:</strong>
+                ${escaparHTML(pedido.endereco || "-")}
+            </p>
+
+            <p>
+                <strong>Bairro:</strong>
+                ${escaparHTML(pedido.bairro || "-")}
+            </p>
+
+            <p>
+                <strong>Cidade:</strong>
+                ${escaparHTML(pedido.cidade || "-")}
+            </p>
+
+            <p>
+                <strong>CEP:</strong>
+                ${escaparHTML(pedido.cep || "-")}
+            </p>
+
+            <div class="area-acompanhar-entrega">
+                <div class="card-acompanhar-entrega">
+                    <div class="icone-entrega">🚚</div>
+
+                    <div class="informacoes-entrega">
+                        <h3>Acompanhar entrega</h3>
+                        <p>
+                            Consulte o andamento do seu pedido.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="botao-visualizar-entrega">
+                        Visualizar entrega
+                    </button>
+                </div>
+            </div>
+
+            <h3>Produtos do pedido</h3>
+
+            ${
+                produtosHTML ||
+                "<p>Nenhum produto vinculado a este pedido.</p>"
+            }
+        `;
+
+        const botaoEntrega = detalhesPedido.querySelector(
+    ".botao-visualizar-entrega"
+);
+
+if (botaoEntrega) {
+    botaoEntrega.addEventListener("click", () => {
+        const numero = pedido.numero || numeroPedido;
+
+        window.location.href =
+           `http://localhost:3000/pages/acompanhar_entrega.html?pedido=${encodeURIComponent(numero)}`;
+});
+}
+
+        mostrarTela("detalhes");
+
+    } catch (erro) {
+        console.error("Erro ao consultar pedido:", erro);
+
+        alert(
+            "Erro ao conectar com o servidor para consultar o pedido."
+        );
+    }
+}
+
+/* =========================================
+   CLIQUES EM PEDIDOS NO HTML
+========================================= */
+
+document
+    .querySelectorAll(".compra, .pedido-central")
+    .forEach(elemento => {
+        elemento.addEventListener("click", () => {
+            const numeroPedido = elemento.dataset.pedido;
+
+            if (numeroPedido) {
+                abrirDetalhes(numeroPedido);
+            }
+        });
+    });
+
+    /* =========================================
    MEU PERFIL - CARREGAR
 ========================================= */
 
@@ -396,9 +530,7 @@ async function carregarPerfil() {
         const cliente = JSON.parse(clienteSalvo);
 
         if (!cliente.id) {
-            alert(
-                "Não foi possível identificar o cliente. Faça login novamente."
-            );
+            alert("Não foi possível identificar o cliente.");
             return;
         }
 
@@ -410,7 +542,8 @@ async function carregarPerfil() {
 
         if (!resposta.ok || !dados.sucesso) {
             alert(
-                dados.mensagem || "Não foi possível carregar o perfil."
+                dados.mensagem ||
+                "Não foi possível carregar o perfil."
             );
             return;
         }
@@ -461,20 +594,16 @@ if (formPerfilCentral) {
         }
 
         const nome = document
-            .getElementById("nomeClienteCentral")
-            ?.value.trim();
+            .getElementById("nomeClienteCentral")?.value.trim();
 
         const email = document
-            .getElementById("emailClienteCentral")
-            ?.value.trim();
+            .getElementById("emailClienteCentral")?.value.trim();
 
         const telefone = document
-            .getElementById("telefoneClienteCentral")
-            ?.value.trim();
+            .getElementById("telefoneClienteCentral")?.value.trim();
 
         const senha = document
-            .getElementById("senhaClienteCentral")
-            ?.value || "";
+            .getElementById("senhaClienteCentral")?.value || "";
 
         if (!nome || !email || !telefone) {
             alert("Preencha nome, e-mail e telefone.");
@@ -483,8 +612,8 @@ if (formPerfilCentral) {
 
         if (senha.trim()) {
             alert(
-                "A alteração de senha será configurada separadamente. " +
-                "Deixe o campo senha vazio por enquanto."
+                "A alteração de senha ainda não está configurada. " +
+                "Deixe o campo senha vazio."
             );
             return;
         }
@@ -509,22 +638,26 @@ if (formPerfilCentral) {
 
             if (!resposta.ok || !dados.sucesso) {
                 alert(
-                    dados.mensagem || "Não foi possível salvar o perfil."
+                    dados.mensagem ||
+                    "Não foi possível salvar o perfil."
                 );
                 return;
             }
 
             cliente.nome = nome;
             cliente.email = email;
+            cliente.telefone = telefone;
 
-            localStorage.setItem("cliente", JSON.stringify(cliente));
+            localStorage.setItem(
+                "cliente",
+                JSON.stringify(cliente)
+            );
 
-            const campoSenha =
-                document.getElementById("senhaClienteCentral");
+            const campoSenha = document.getElementById(
+                "senhaClienteCentral"
+            );
 
-            if (campoSenha) {
-                campoSenha.value = "";
-            }
+            if (campoSenha) campoSenha.value = "";
 
             alert("Perfil atualizado com sucesso!");
 
@@ -535,9 +668,8 @@ if (formPerfilCentral) {
     });
 }
 
-
 /* =========================================
-   ENDEREÇO - CARREGAR DO BANCO E SALVAR
+   ENDEREÇO - CARREGAR DO BANCO
 ========================================= */
 
 async function carregarEndereco() {
@@ -570,42 +702,44 @@ async function carregarEndereco() {
         const dados = await resposta.json();
 
         if (!resposta.ok || !dados.sucesso) {
-            alert(dados.mensagem || "Não foi possível carregar o endereço.");
+            alert(
+                dados.mensagem ||
+                "Não foi possível carregar o endereço."
+            );
             return;
         }
 
         const endereco = dados.endereco;
 
-        if (!endereco) {
-            return;
-        }
+        if (!endereco) return;
 
-        document.getElementById("cepCliente").value =
-            endereco.cep || "";
+        const campos = {
+            cepCliente: endereco.cep,
+            ruaCliente: endereco.rua,
+            numeroCliente: endereco.numero,
+            complementoCliente: endereco.complemento,
+            bairroCliente: endereco.bairro,
+            cidadeCliente: endereco.cidade,
+            estadoCliente: endereco.estado
+        };
 
-        document.getElementById("ruaCliente").value =
-            endereco.rua || "";
+        Object.entries(campos).forEach(([id, valor]) => {
+            const campo = document.getElementById(id);
 
-        document.getElementById("numeroCliente").value =
-            endereco.numero || "";
-
-        document.getElementById("complementoCliente").value =
-            endereco.complemento || "";
-
-        document.getElementById("bairroCliente").value =
-            endereco.bairro || "";
-
-        document.getElementById("cidadeCliente").value =
-            endereco.cidade || "";
-
-        document.getElementById("estadoCliente").value =
-            endereco.estado || "";
+            if (campo) {
+                campo.value = valor || "";
+            }
+        });
 
     } catch (erro) {
         console.error("Erro ao carregar endereço:", erro);
         alert("Erro ao conectar com o servidor.");
     }
 }
+
+/* =========================================
+   ENDEREÇO - SALVAR NO BANCO
+========================================= */
 
 if (formEndereco) {
     formEndereco.addEventListener("submit", async evento => {
@@ -632,16 +766,28 @@ if (formEndereco) {
             return;
         }
 
-        const cep = document.getElementById("cepCliente").value.trim();
-        const rua = document.getElementById("ruaCliente").value.trim();
-        const numero = document.getElementById("numeroCliente").value.trim();
-        const complemento = document.getElementById("complementoCliente").value.trim();
-        const bairro = document.getElementById("bairroCliente").value.trim();
-        const cidade = document.getElementById("cidadeCliente").value.trim();
-        const estado = document.getElementById("estadoCliente").value.trim();
+        const ler = id =>
+            document.getElementById(id)?.value.trim() || "";
 
-        if (!cep || !rua || !numero || !bairro || !cidade || !estado) {
-            alert("Preencha todos os campos obrigatórios do endereço.");
+        const cep = ler("cepCliente");
+        const rua = ler("ruaCliente");
+        const numero = ler("numeroCliente");
+        const complemento = ler("complementoCliente");
+        const bairro = ler("bairroCliente");
+        const cidade = ler("cidadeCliente");
+        const estado = ler("estadoCliente");
+
+        if (
+            !cep ||
+            !rua ||
+            !numero ||
+            !bairro ||
+            !cidade ||
+            !estado
+        ) {
+            alert(
+                "Preencha todos os campos obrigatórios do endereço."
+            );
             return;
         }
 
@@ -655,35 +801,45 @@ if (formEndereco) {
         }
 
         try {
-            const resposta = await fetch(`${API_PERFIL}/endereco`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    cliente_idcliente: cliente.id,
-                    cep,
-                    rua,
-                    numero,
-                    complemento,
-                    bairro,
-                    cidade,
-                    estado
-                })
-            });
+            const resposta = await fetch(
+                `${API_PERFIL}/endereco`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        cliente_idcliente: cliente.id,
+                        cep,
+                        rua,
+                        numero,
+                        complemento,
+                        bairro,
+                        cidade,
+                        estado
+                    })
+                }
+            );
 
             const dados = await resposta.json();
 
             if (!resposta.ok || !dados.sucesso) {
-                alert(dados.mensagem || "Não foi possível salvar o endereço.");
+                alert(
+                    dados.mensagem ||
+                    "Não foi possível salvar o endereço."
+                );
                 return;
             }
 
-            alert("Endereço salvo no banco de dados com sucesso!");
+            alert(
+                dados.mensagem ||
+                "Endereço salvo com sucesso!"
+            );
 
         } catch (erro) {
             console.error("Erro ao salvar endereço:", erro);
             alert("Erro ao conectar com o servidor.");
+
         } finally {
             if (botaoSalvar) {
                 botaoSalvar.disabled = false;
@@ -692,15 +848,12 @@ if (formEndereco) {
         }
     });
 }
-
 /* =========================================
    PRODUTOS - CARREGAR DA API
 ========================================= */
 
 async function carregarProdutos() {
-    if (!listaProdutos || produtosCarregando) {
-        return;
-    }
+    if (!listaProdutos || produtosCarregando) return;
 
     produtosCarregando = true;
 
@@ -722,7 +875,8 @@ async function carregarProdutos() {
 
         if (!resposta.ok) {
             throw new Error(
-                dados.mensagem || "Não foi possível carregar os produtos."
+                dados.mensagem ||
+                "Não foi possível carregar os produtos."
             );
         }
 
@@ -751,6 +905,7 @@ async function carregarProdutos() {
             mensagemProdutos.textContent =
                 "Verifique se o servidor está ligado e se a rota /api/produtos existe.";
         }
+
     } finally {
         produtosCarregando = false;
     }
@@ -761,9 +916,7 @@ async function carregarProdutos() {
 ========================================= */
 
 function renderizarProdutos(produtos) {
-    if (!listaProdutos) {
-        return;
-    }
+    if (!listaProdutos) return;
 
     if (produtos.length === 0) {
         listaProdutos.innerHTML = `
@@ -777,29 +930,37 @@ function renderizarProdutos(produtos) {
     }
 
     listaProdutos.innerHTML = produtos.map(produto => {
-        const codigo = produto.codigo ?? produto.idprodutos ?? "-";
+        const codigo =
+            produto.codigo ?? produto.idprodutos ?? "-";
+
         const nome = produto.nome ?? "Produto sem nome";
+
         const precoVenda = Number(produto.precoVenda ?? 0);
         const estoque = Number(produto.estoque ?? 0);
 
         const precoFormatado = Number.isFinite(precoVenda)
-            ? precoVenda.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL"
-            })
+            ? formatarValorPedido(precoVenda)
             : "-";
-
-        const validade = formatarValidade(produto.validade);
-        const situacao = formatarSituacao(produto.situacao);
 
         return `
             <tr>
                 <td>${escaparHTML(codigo)}</td>
+
                 <td>${escaparHTML(nome)}</td>
+
                 <td>${precoFormatado}</td>
-                <td>${Number.isFinite(estoque) ? estoque : "-"}</td>
-                <td>${escaparHTML(validade)}</td>
-                <td>${escaparHTML(situacao)}</td>
+
+                <td>
+                    ${Number.isFinite(estoque) ? estoque : "-"}
+                </td>
+
+                <td>
+                    ${escaparHTML(formatarValidade(produto.validade))}
+                </td>
+
+                <td>
+                    ${escaparHTML(formatarSituacao(produto.situacao))}
+                </td>
             </tr>
         `;
     }).join("");
@@ -827,7 +988,8 @@ function filtrarProdutos() {
             produto.codigo ?? produto.idprodutos ?? ""
         ).toLocaleLowerCase("pt-BR");
 
-        return nome.includes(termo) || codigo.includes(termo);
+        return nome.includes(termo) ||
+               codigo.includes(termo);
     });
 
     renderizarProdutos(filtrados);
@@ -842,12 +1004,13 @@ if (buscarProduto) {
 ========================================= */
 
 function formatarValidade(valor) {
-    if (!valor) {
-        return "-";
-    }
+    if (!valor) return "-";
 
     const texto = String(valor);
-    const data = texto.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+    const data = texto.match(
+        /^(\d{4})-(\d{2})-(\d{2})/
+    );
 
     if (data) {
         return `${data[3]}/${data[2]}/${data[1]}`;
@@ -861,7 +1024,11 @@ function formatarValidade(valor) {
 ========================================= */
 
 function formatarSituacao(valor) {
-    if (valor === undefined || valor === null || valor === "") {
+    if (
+        valor === undefined ||
+        valor === null ||
+        valor === ""
+    ) {
         return "-";
     }
 
@@ -879,21 +1046,11 @@ function formatarSituacao(valor) {
 }
 
 /* =========================================
-   ESCAPAR HTML
-========================================= */
-
-function escaparHTML(valor) {
-    return String(valor).replace(/[&<>"']/g, caractere => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-    })[caractere]);
-}
-
-/* =========================================
-   TELA INICIAL
+   INICIALIZAÇÃO
 ========================================= */
 
 mostrarTela("inicio");
+
+carregarProdutos();
+
+carregarMinhasCompras();

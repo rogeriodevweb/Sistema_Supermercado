@@ -1,57 +1,109 @@
+
 const conexao = require("../conexao/conexao");
 
 const indexModel = {
 
-    listarPedidos: (callback) => {
-
+    // Listar somente os pedidos do cliente
+    listarPedidos: (clienteId, callback) => {
         const sql = `
             SELECT
-                id,
-                numero_pedido,
-                status,
-                data_pedido,
-                horario_entrega,
-                total
-            FROM pedidos
-            ORDER BY data_pedido DESC, id DESC
+                p.idpedidos AS id,
+                p.numeroPedido AS numero_pedido,
+                p.statusPedido AS status,
+                p.datapedido AS data_pedido,
+                e.horarioEntrega AS horario_entrega,
+                COALESCE(
+                    SUM(
+                        (ip.quantidade * ip.precoUnitario)
+                        - COALESCE(ip.desconto, 0)
+                    ),
+                    0
+                ) AS total
+            FROM pedidos p
+            LEFT JOIN entregas e
+                ON e.identregas = p.entregas_identregas
+            LEFT JOIN itensPedidos ip
+                ON ip.pedidos_idpedidos = p.idpedidos
+            WHERE p.cliente_idcliente = ?
+            GROUP BY
+                p.idpedidos,
+                p.numeroPedido,
+                p.statusPedido,
+                p.datapedido,
+                e.horarioEntrega
+            ORDER BY p.datapedido DESC, p.idpedidos DESC
         `;
 
-        db.query(sql, callback);
+        conexao.query(sql, [clienteId], callback);
     },
 
-    listarPedidosEntrega: (callback) => {
-
+    // Listar entregas pendentes do cliente
+    listarPedidosEntrega: (clienteId, callback) => {
         const sql = `
             SELECT
-                id,
-                numero_pedido,
-                status,
-                data_pedido,
-                horario_entrega,
-                total
-            FROM pedidos
-            WHERE status IN ('Em preparo', 'A caminho')
-            ORDER BY data_pedido ASC
+                p.idpedidos AS id,
+                p.numeroPedido AS numero_pedido,
+                p.statusPedido AS status,
+                p.datapedido AS data_pedido,
+                e.horarioEntrega AS horario_entrega,
+                COALESCE(
+                    SUM(
+                        (ip.quantidade * ip.precoUnitario)
+                        - COALESCE(ip.desconto, 0)
+                    ),
+                    0
+                ) AS total
+            FROM pedidos p
+            LEFT JOIN entregas e
+                ON e.identregas = p.entregas_identregas
+            LEFT JOIN itensPedidos ip
+                ON ip.pedidos_idpedidos = p.idpedidos
+            WHERE p.cliente_idcliente = ?
+              AND p.statusPedido IN ('Em preparo', 'A caminho')
+            GROUP BY
+                p.idpedidos,
+                p.numeroPedido,
+                p.statusPedido,
+                p.datapedido,
+                e.horarioEntrega
+            ORDER BY p.datapedido ASC, p.idpedidos ASC
         `;
 
-        db.query(sql, callback);
+        conexao.query(sql, [clienteId], callback);
     },
 
-    buscarPedido: (id, callback) => {
-
+    // Buscar um pedido específico pertencente ao cliente
+    buscarPedido: (id, clienteId, callback) => {
         const sql = `
             SELECT
-                id,
-                numero_pedido,
-                status,
-                data_pedido,
-                horario_entrega,
-                total
-            FROM pedidos
-            WHERE id = ?
+                p.idpedidos AS id,
+                p.numeroPedido AS numero_pedido,
+                p.statusPedido AS status,
+                p.datapedido AS data_pedido,
+                e.horarioEntrega AS horario_entrega,
+                COALESCE(
+                    SUM(
+                        (ip.quantidade * ip.precoUnitario)
+                        - COALESCE(ip.desconto, 0)
+                    ),
+                    0
+                ) AS total
+            FROM pedidos p
+            LEFT JOIN entregas e
+                ON e.identregas = p.entregas_identregas
+            LEFT JOIN itensPedidos ip
+                ON ip.pedidos_idpedidos = p.idpedidos
+            WHERE p.idpedidos = ?
+              AND p.cliente_idcliente = ?
+            GROUP BY
+                p.idpedidos,
+                p.numeroPedido,
+                p.statusPedido,
+                p.datapedido,
+                e.horarioEntrega
         `;
 
-        db.query(sql, [id], callback);
+        conexao.query(sql, [id, clienteId], callback);
     }
 };
 

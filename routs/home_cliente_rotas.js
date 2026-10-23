@@ -2,23 +2,28 @@
 const express = require("express");
 const router = express.Router();
 
-const indexController = require("../controller/indexController");
+const indexController = require("../controller/home_cliente_controller");
 
 // ==========================================
 // ROTAS DA HOME DO CLIENTE
 // ==========================================
 
-// Listar todos os pedidos
-router.get("/pedidos", indexController.listarPedidos);
+// Listar compras do cliente
+router.get(
+    "/clientes/:clienteId/pedidos",
+    indexController.listarPedidos
+);
 
-// Listar pedidos em preparo ou a caminho
-router.get("/pedidos/entrega", indexController.listarPedidosEntrega);
+// Listar compras em preparo ou a caminho
+router.get(
+    "/clientes/:clienteId/pedidos/entrega",
+    indexController.listarPedidosEntrega
+);
 
-// Buscar pedido pelo ID
-router.get("/pedidos/:id", indexController.buscarPedido);
-
-// ==========================================
-// EXPORTAR ROTAS
-// ==========================================
+// Buscar detalhes de uma compra específica
+router.get(
+    "/clientes/:clienteId/pedidos/:id",
+    indexController.buscarPedido
+);
 
 module.exports = router;

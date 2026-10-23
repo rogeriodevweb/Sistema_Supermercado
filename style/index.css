@@ -1337,3 +1337,29 @@ body {
         font-size: 13px;
     }
 }
+/*======================================*/
+
+
+.botao-ver-detalhes {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 10px 16px;
+    background: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.botao-ver-detalhes:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.botao-ver-detalhes:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: 3px;
+}
