@@ -103,7 +103,59 @@ app.put("/perfil/:id", (req, res) => {
 /* =========================================
    SALVAR / ATUALIZAR ENDEREÇO DO CLIENTE
 ========================================= */
+/* =========================================
+   BUSCAR ENDEREÇO DO CLIENTE
+========================================= */
 
+app.get("/endereco/:id", (req, res) => {
+    const idCliente = Number(req.params.id);
+
+    if (!Number.isInteger(idCliente) || idCliente <= 0) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: "ID do cliente inválido."
+        });
+    }
+
+    const sql = `
+        SELECT
+            idEndereco,
+            cep,
+            rua,
+            numero,
+            complemento,
+            bairro,
+            cidade,
+            estado
+        FROM endereco
+        WHERE cliente_idcliente = ?
+        LIMIT 1
+    `;
+
+    conexao.query(sql, [idCliente], (erro, resultados) => {
+        if (erro) {
+            console.error("Erro ao buscar endereço:", erro);
+
+            return res.status(500).json({
+                sucesso: false,
+                mensagem: "Erro ao consultar o endereço."
+            });
+        }
+
+        if (resultados.length === 0) {
+            return res.json({
+                sucesso: true,
+                endereco: null,
+                mensagem: "Nenhum endereço cadastrado."
+            });
+        }
+
+        return res.json({
+            sucesso: true,
+            endereco: resultados[0]
+        });
+    });
+});
 app.post("/endereco", (req, res) => {
     const {
         cliente_idcliente,
