@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS cliente (
   email VARCHAR(200) NULL,
   telefone VARCHAR(45) NOT NULL,
   status TINYINT NOT NULL,
-  senha VARCHAR(45) NULL,
+  senha VARCHAR(200) NULL,
 UNIQUE KEY cpf_UNIQUE (cpf)
 );
 
@@ -319,8 +319,11 @@ CREATE TABLE IF NOT EXISTS endereco (
   estado VARCHAR(45) NOT NULL,
   rua VARCHAR(45) NOT NULL,
   numero VARCHAR(45) NOT NULL,
+  complemento VARCHAR(100) NULL,
   cliente_idcliente INT NOT NULL,
-CONSTRAINT fk_endereco_cliente_idcliente FOREIGN KEY (cliente_idcliente) REFERENCES cliente (idcliente)
+  CONSTRAINT fk_endereco_cliente_idcliente
+    FOREIGN KEY (cliente_idcliente)
+    REFERENCES cliente (idcliente)
 );
 
 -- TABELA 26: caixas

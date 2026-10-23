@@ -93,7 +93,7 @@ if (loginForm) {
 
             /* Redirecionar para a página inicial */
             setTimeout(() => {
-                window.location.href = "/Sistema_Supermecado/index.html";
+                window.location.href = "/index.html";
             }, 1000);
 
         } catch (erro) {

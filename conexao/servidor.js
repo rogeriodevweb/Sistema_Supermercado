@@ -100,6 +100,162 @@ app.put("/perfil/:id", (req, res) => {
 /* =========================================
    INICIAR SERVIDOR
 ========================================= */
+/* =========================================
+   SALVAR / ATUALIZAR ENDEREÇO DO CLIENTE
+========================================= */
+
+app.post("/endereco", (req, res) => {
+    const {
+        cliente_idcliente,
+        cep,
+        rua,
+        numero,
+        complemento,
+        bairro,
+        cidade,
+        estado
+    } = req.body;
+
+    if (
+        !cliente_idcliente ||
+        !cep?.trim() ||
+        !rua?.trim() ||
+        !numero?.trim() ||
+        !bairro?.trim() ||
+        !cidade?.trim() ||
+        !estado?.trim()
+    ) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: "Preencha todos os campos obrigatórios."
+        });
+    }
+
+    const idCliente = Number(cliente_idcliente);
+
+    if (!Number.isInteger(idCliente) || idCliente <= 0) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: "ID do cliente inválido."
+        });
+    }
+
+    // Confirma que o cliente existe
+    conexao.query(
+        "SELECT idcliente FROM cliente WHERE idcliente = ?",
+        [idCliente],
+        (erro, resultados) => {
+            if (erro) {
+                console.error("Erro ao consultar cliente:", erro);
+                return res.status(500).json({
+                    sucesso: false,
+                    mensagem: "Erro ao consultar o cliente."
+                });
+            }
+
+            if (resultados.length === 0) {
+                return res.status(404).json({
+                    sucesso: false,
+                    mensagem: "Cliente não encontrado."
+                });
+            }
+
+            // Verifica se o cliente já possui endereço
+            conexao.query(
+                "SELECT idEndereco FROM endereco WHERE cliente_idcliente = ? LIMIT 1",
+                [idCliente],
+                (erroBusca, enderecos) => {
+                    if (erroBusca) {
+                        console.error("Erro ao consultar endereço:", erroBusca);
+                        return res.status(500).json({
+                            sucesso: false,
+                            mensagem: "Erro ao consultar o endereço."
+                        });
+                    }
+
+                    const valores = [
+                        bairro.trim(),
+                        cep.trim(),
+                        cidade.trim(),
+                        estado.trim(),
+                        rua.trim(),
+                        numero.trim(),
+                        complemento?.trim() || null
+                    ];
+
+                    if (enderecos.length > 0) {
+                        // Atualiza o endereço existente
+                        const sql = `
+                            UPDATE endereco
+                            SET bairro = ?,
+                                cep = ?,
+                                cidade = ?,
+                                estado = ?,
+                                rua = ?,
+                                numero = ?,
+                                complemento = ?
+                            WHERE idEndereco = ?
+                        `;
+
+                        conexao.query(
+                            sql,
+                            [...valores, enderecos[0].idEndereco],
+                            (erroAtualizar) => {
+                                if (erroAtualizar) {
+                                    console.error("Erro ao atualizar endereço:", erroAtualizar);
+                                    return res.status(500).json({
+                                        sucesso: false,
+                                        mensagem: "Não foi possível atualizar o endereço."
+                                    });
+                                }
+
+                                return res.json({
+                                    sucesso: true,
+                                    mensagem: "Endereço atualizado com sucesso!"
+                                });
+                            }
+                        );
+                    } else {
+                        // Cadastra o primeiro endereço do cliente
+                        const sql = `
+                            INSERT INTO endereco
+                            (
+                                bairro,
+                                cep,
+                                cidade,
+                                estado,
+                                rua,
+                                numero,
+                                complemento,
+                                cliente_idcliente
+                            )
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        `;
+
+                        conexao.query(
+                            sql,
+                            [...valores, idCliente],
+                            (erroInserir) => {
+                                if (erroInserir) {
+                                    console.error("Erro ao salvar endereço:", erroInserir);
+                                    return res.status(500).json({
+                                        sucesso: false,
+                                        mensagem: "Não foi possível salvar o endereço."
+                                    });
+                                }
+
+                                return res.status(201).json({
+                                    sucesso: true,
+                                    mensagem: "Endereço salvo com sucesso!"
+                                });
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    );
+});
 
 app.listen(PORTA, () => {
     console.log(`Servidor rodando em http://localhost:${PORTA}`);

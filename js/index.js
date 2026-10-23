@@ -183,6 +183,7 @@ if (botaoInicio) {
 if (botaoEndereco) {
     botaoEndereco.addEventListener("click", () => {
         mostrarTela("endereco");
+        carregarEndereco();
     });
 }
 
@@ -534,41 +535,161 @@ if (formPerfilCentral) {
     });
 }
 
+
 /* =========================================
-   SALVAR ENDEREÇO
+   ENDEREÇO - CARREGAR DO BANCO E SALVAR
 ========================================= */
 
+async function carregarEndereco() {
+    const clienteSalvo = localStorage.getItem("cliente");
+
+    if (!clienteSalvo) {
+        alert("Faça login novamente para acessar seu endereço.");
+        return;
+    }
+
+    let cliente;
+
+    try {
+        cliente = JSON.parse(clienteSalvo);
+    } catch {
+        alert("Os dados do login estão inválidos. Entre novamente.");
+        return;
+    }
+
+    if (!cliente.id) {
+        alert("Não foi possível identificar o cliente.");
+        return;
+    }
+
+    try {
+        const resposta = await fetch(
+            `${API_PERFIL}/endereco/${cliente.id}`
+        );
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok || !dados.sucesso) {
+            alert(dados.mensagem || "Não foi possível carregar o endereço.");
+            return;
+        }
+
+        const endereco = dados.endereco;
+
+        if (!endereco) {
+            return;
+        }
+
+        document.getElementById("cepCliente").value =
+            endereco.cep || "";
+
+        document.getElementById("ruaCliente").value =
+            endereco.rua || "";
+
+        document.getElementById("numeroCliente").value =
+            endereco.numero || "";
+
+        document.getElementById("complementoCliente").value =
+            endereco.complemento || "";
+
+        document.getElementById("bairroCliente").value =
+            endereco.bairro || "";
+
+        document.getElementById("cidadeCliente").value =
+            endereco.cidade || "";
+
+        document.getElementById("estadoCliente").value =
+            endereco.estado || "";
+
+    } catch (erro) {
+        console.error("Erro ao carregar endereço:", erro);
+        alert("Erro ao conectar com o servidor.");
+    }
+}
+
 if (formEndereco) {
-    formEndereco.addEventListener("submit", evento => {
+    formEndereco.addEventListener("submit", async evento => {
         evento.preventDefault();
 
-        const cep = document.getElementById("cepCliente")?.value.trim();
-        const rua = document.getElementById("ruaCliente")?.value.trim();
-        const numero = document.getElementById("numeroCliente")?.value.trim();
-        const complemento = document
-            .getElementById("complementoCliente")?.value.trim();
-        const bairro = document.getElementById("bairroCliente")?.value.trim();
-        const cidade = document.getElementById("cidadeCliente")?.value.trim();
-        const estado = document.getElementById("estadoCliente")?.value.trim();
+        const clienteSalvo = localStorage.getItem("cliente");
+
+        if (!clienteSalvo) {
+            alert("Faça login novamente para salvar seu endereço.");
+            return;
+        }
+
+        let cliente;
+
+        try {
+            cliente = JSON.parse(clienteSalvo);
+        } catch {
+            alert("Os dados do login estão inválidos. Entre novamente.");
+            return;
+        }
+
+        if (!cliente.id) {
+            alert("Não foi possível identificar o cliente.");
+            return;
+        }
+
+        const cep = document.getElementById("cepCliente").value.trim();
+        const rua = document.getElementById("ruaCliente").value.trim();
+        const numero = document.getElementById("numeroCliente").value.trim();
+        const complemento = document.getElementById("complementoCliente").value.trim();
+        const bairro = document.getElementById("bairroCliente").value.trim();
+        const cidade = document.getElementById("cidadeCliente").value.trim();
+        const estado = document.getElementById("estadoCliente").value.trim();
 
         if (!cep || !rua || !numero || !bairro || !cidade || !estado) {
             alert("Preencha todos os campos obrigatórios do endereço.");
             return;
         }
 
-        const endereco = {
-            cep,
-            rua,
-            numero,
-            complemento,
-            bairro,
-            cidade,
-            estado
-        };
+        const botaoSalvar = formEndereco.querySelector(
+            'button[type="submit"]'
+        );
 
-        console.log("Endereço atualizado:", endereco);
+        if (botaoSalvar) {
+            botaoSalvar.disabled = true;
+            botaoSalvar.textContent = "Salvando...";
+        }
 
-        alert("Endereço atualizado com sucesso!");
+        try {
+            const resposta = await fetch(`${API_PERFIL}/endereco`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    cliente_idcliente: cliente.id,
+                    cep,
+                    rua,
+                    numero,
+                    complemento,
+                    bairro,
+                    cidade,
+                    estado
+                })
+            });
+
+            const dados = await resposta.json();
+
+            if (!resposta.ok || !dados.sucesso) {
+                alert(dados.mensagem || "Não foi possível salvar o endereço.");
+                return;
+            }
+
+            alert("Endereço salvo no banco de dados com sucesso!");
+
+        } catch (erro) {
+            console.error("Erro ao salvar endereço:", erro);
+            alert("Erro ao conectar com o servidor.");
+        } finally {
+            if (botaoSalvar) {
+                botaoSalvar.disabled = false;
+                botaoSalvar.textContent = "Salvar endereço";
+            }
+        }
     });
 }
 
