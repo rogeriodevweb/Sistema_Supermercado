@@ -4,8 +4,18 @@
 
 const API = "http://localhost:3000";
 
+const ETAPAS_PADRAO = [
+    { titulo: "Pedido realizado", icone: "📦" },
+    { titulo: "Pagamento confirmado", icone: "💳" },
+    { titulo: "Pedido preparado", icone: "📋" },
+    { titulo: "Em transporte", icone: "🚚" },
+    { titulo: "Pedido entregue", icone: "📍" }
+];
+
+let consultandoPedido = false;
+
 /* =========================================================
-   LIMPAR CAMPOS DO PEDIDO
+   LIMPAR CAMPOS
 ========================================================= */
 
 function limparPedido() {
@@ -21,17 +31,10 @@ function limparPedido() {
         "enderecoRua",
         "enderecoBairro",
         "enderecoCidade",
-        "enderecoCep",
-        "nomeProduto",
-        "quantidadeProduto"
+        "enderecoCep"
     ];
 
-    campos.forEach(id => {
-        const elemento = document.getElementById(id);
-        if (elemento) {
-            elemento.textContent = "";
-        }
-    });
+    campos.forEach(id => preencher(id, ""));
 
     const status = document.getElementById("statusPedido");
 
@@ -39,11 +42,17 @@ function limparPedido() {
         status.className = "status";
     }
 
+    const nomeProduto = document.getElementById("nomeProduto");
+    const quantidadeProduto = document.getElementById("quantidadeProduto");
+
+    if (nomeProduto) nomeProduto.replaceChildren();
+    if (quantidadeProduto) quantidadeProduto.replaceChildren();
+
     limparLinhaDoTempo();
 }
 
 /* =========================================================
-   LIMPAR LINHA DO TEMPO
+   CRIAR LINHA DO TEMPO
 ========================================================= */
 
 function limparLinhaDoTempo() {
@@ -51,32 +60,9 @@ function limparLinhaDoTempo() {
 
     if (!linha) return;
 
-    const etapas = [
-        {
-            titulo: "Pedido realizado",
-            icone: "📦"
-        },
-        {
-            titulo: "Pagamento confirmado",
-            icone: "💳"
-        },
-        {
-            titulo: "Pedido preparado",
-            icone: "📋"
-        },
-        {
-            titulo: "Em transporte",
-            icone: "🚚"
-        },
-        {
-            titulo: "Pedido entregue",
-            icone: "📍"
-        }
-    ];
-
     linha.replaceChildren();
 
-    etapas.forEach(etapa => {
+    ETAPAS_PADRAO.forEach(etapa => {
         const item = document.createElement("div");
         item.className = "timeline-item";
 
@@ -99,23 +85,44 @@ function limparLinhaDoTempo() {
     });
 }
 
-/* =========================================
-   CARREGAR PEDIDO ENVIADO PELA TELA ANTERIOR
-========================================= */
+/* =========================================================
+   MENSAGEM DA BUSCA
+========================================================= */
+
+function mostrarMensagem(texto, erro = false) {
+    const mensagem = document.getElementById("mensagemBusca");
+
+    if (!mensagem) return;
+
+    mensagem.textContent = texto;
+    mensagem.classList.toggle("erro", erro);
+}
+
+/* =========================================================
+   CARREGAR PEDIDO DA PÁGINA ANTERIOR
+========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+    limparPedido();
+
     const parametros = new URLSearchParams(window.location.search);
     const numeroPedido = parametros.get("pedido");
 
-    if (!numeroPedido) return;
-
     const campo = document.getElementById("codigoPedido");
 
-    if (campo) {
+    if (campo && numeroPedido) {
         campo.value = numeroPedido;
+        consultarPedido();
     }
 
-    consultarPedido();
+    if (campo) {
+        campo.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                consultarPedido();
+            }
+        });
+    }
 });
 
 /* =========================================================
@@ -123,43 +130,38 @@ document.addEventListener("DOMContentLoaded", () => {
 ========================================================= */
 
 async function consultarPedido() {
-    const input = document.getElementById("codigoPedido");
-    const mensagem = document.getElementById("mensagemBusca");
-    const codigo = input.value.trim();
+    if (consultandoPedido) return;
 
-    mensagem.textContent = "";
+    const input = document.getElementById("codigoPedido");
+    const codigo = input ? input.value.trim() : "";
 
     if (!codigo) {
-        mensagem.textContent = "Digite o código do pedido.";
+        mostrarMensagem("Digite o código do pedido.", true);
         return;
     }
 
+    consultandoPedido = true;
     limparPedido();
-    mensagem.textContent = "Consultando pedido...";
-
-    /*
-       A consulta real será ligada à rota de pedidos do seu
-       backend quando confirmarmos a rota e as tabelas.
-    */
+    mostrarMensagem("Consultando pedido...");
 
     try {
-        const resposta = await buscarPedidoPorCodigo(codigo);
+        const pedido = await buscarPedidoPorCodigo(codigo);
 
-        if (!resposta) {
-            mensagem.textContent =
-                "Não foi possível consultar o pedido. " +
-                "Verifique a rota da API de pedidos.";
-            return;
+        if (!pedido || typeof pedido !== "object") {
+            throw new Error("A API não retornou os detalhes do pedido.");
         }
 
-        carregarPedido(resposta);
-        mensagem.textContent = "Pedido encontrado!";
-
+        carregarPedido(pedido);
+        mostrarMensagem("Pedido encontrado!");
     } catch (erro) {
         console.error("Erro ao consultar pedido:", erro);
 
-        mensagem.textContent =
-            "Erro ao consultar o pedido. Verifique se o servidor está ligado.";
+        mostrarMensagem(
+            erro.message || "Não foi possível consultar o pedido.",
+            true
+        );
+    } finally {
+        consultandoPedido = false;
     }
 }
 
@@ -168,106 +170,118 @@ async function consultarPedido() {
 ========================================================= */
 
 async function buscarPedidoPorCodigo(codigo) {
-    /*
-       IMPORTANTE:
-       Substitua a URL abaixo pela rota REAL do seu backend.
-       Esta rota é apenas o formato esperado, não uma rota
-       confirmada como existente no seu servidor.
-    */
-
     const resposta = await fetch(
         `${API}/api/pedidos/${encodeURIComponent(codigo)}`
     );
 
-    if (resposta.status === 404) {
-        return null;
-    }
+    const tipoConteudo = resposta.headers.get("content-type") || "";
 
-    if (!resposta.ok) {
-        throw new Error(`Erro HTTP ${resposta.status}`);
+    if (!tipoConteudo.includes("application/json")) {
+        throw new Error(
+            "A API não retornou JSON. Verifique a rota de pedidos no servidor."
+        );
     }
 
     const dados = await resposta.json();
+
+    if (!resposta.ok || dados.sucesso === false) {
+        throw new Error(
+            dados.mensagem ||
+            (resposta.status === 404
+                ? "Pedido não encontrado."
+                : `Erro ao consultar pedido (${resposta.status}).`)
+        );
+    }
 
     return dados.pedido || dados;
 }
 
 /* =========================================================
-   PREENCHER CAMPOS DO PEDIDO
+   PREENCHER DETALHES DO PEDIDO
 ========================================================= */
 
-
 function carregarPedido(pedido) {
-    preencher("numeroPedido", pedido.numero ?? pedido.codigo ?? "");
-    preencher("statusPedido", pedido.status ?? "");
-    preencher("previsaoEntrega", pedido.previsao ?? pedido.previsaoEntrega ?? "");
-    preencher("ultimaAtualizacao", pedido.atualizacao ?? "");
+    const numero = pedido.numeroPedido ?? pedido.numero ?? pedido.codigo ?? "";
+    const status = pedido.statusEntrega ?? pedido.statusPedido ?? pedido.status ?? "";
+    const previsao = pedido.dataEntrega ?? pedido.previsao ?? pedido.previsaoEntrega ?? "";
 
-    preencher("transportadora", pedido.transportadora ?? "Não informada");
-    preencher("codigoRastreio", pedido.rastreio ?? pedido.codigoRastreio ?? "Não disponível");
-    preencher("tipoEnvio", pedido.tipoEnvio ?? "Não informado");
+    preencher("numeroPedido", numero);
+    preencher("statusPedido", status);
+    preencher("previsaoEntrega", formatarData(previsao));
+    preencher(
+        "ultimaAtualizacao",
+        formatarData(pedido.atualizacao ?? pedido.datapedido ?? "")
+    );
 
-    preencher("nomeDestinatario", pedido.destinatario ?? pedido.nomeDestinatario ?? "");
-    preencher("enderecoRua", pedido.endereco ?? pedido.rua ?? "");
+    preencher("transportadora", pedido.transportadora || "Não informada");
+    preencher(
+        "codigoRastreio",
+        pedido.rastreio ?? pedido.codigoRastreio ?? "Não disponível"
+    );
+    preencher("tipoEnvio", pedido.tipoEnvio || "Não informado");
+
+    preencher(
+        "nomeDestinatario",
+        pedido.destinatario ?? pedido.nomeDestinatario ?? ""
+    );
+
+    const rua = pedido.endereco ?? pedido.rua ?? "";
+    const numeroEndereco = pedido.numeroEndereco ?? "";
+    const complemento = pedido.complemento ?? "";
+
+    const enderecoCompleto = [
+        rua,
+        numeroEndereco,
+        complemento
+    ].filter(Boolean).join(", ");
+
+    preencher("enderecoRua", enderecoCompleto);
     preencher("enderecoBairro", pedido.bairro ?? "");
     preencher("enderecoCidade", pedido.cidade ?? "");
-    preencher("enderecoCep", pedido.cep ? `CEP: ${pedido.cep}` : "");
 
-    // A API retorna os produtos em pedido.produtos
-    const produtos = Array.isArray(pedido.produtos)
-        ? pedido.produtos
-        : Array.isArray(pedido.itens)
-            ? pedido.itens
-            : [];
+    const cep = pedido.cep ?? "";
 
-    const nomeProduto = document.getElementById("nomeProduto");
-    const quantidadeProduto = document.getElementById("quantidadeProduto");
+    preencher(
+        "enderecoCep",
+        cep ? `CEP: ${cep}` : ""
+    );
 
-    if (nomeProduto) {
-        nomeProduto.replaceChildren();
-    }
-
-    if (quantidadeProduto) {
-        quantidadeProduto.textContent = "";
-    }
-
-    if (produtos.length > 0) {
-        produtos.forEach(produto => {
-            const nome = produto.nome ?? produto.nomeProduto ?? "Produto sem nome";
-            const quantidade = produto.quantidade ?? 0;
-
-            if (nomeProduto) {
-                const item = document.createElement("div");
-                item.className = "produto-entrega";
-                item.textContent = nome;
-                nomeProduto.appendChild(item);
-            }
-
-            if (quantidadeProduto) {
-                const quantidadeItem = document.createElement("div");
-                quantidadeItem.textContent = `Quantidade: ${quantidade}`;
-                quantidadeProduto.appendChild(quantidadeItem);
-            }
-        });
-    } else {
-        preencher("nomeProduto", "Nenhum produto encontrado neste pedido.");
-    }
-
-    atualizarStatus(pedido.status ?? "");
-    atualizarLinhaDoTempo(pedido.etapas ?? []);
+    atualizarStatus(status);
+    carregarProdutos(pedido.produtos ?? pedido.itens ?? []);
+    atualizarLinhaDoTempo(pedido.etapas ?? [], status);
 }
 
 
+
+
+
 /* =========================================================
-   PREENCHER UM CAMPO COM SEGURANÇA
+   PREENCHER CAMPO COM SEGURANÇA
 ========================================================= */
 
 function preencher(id, valor) {
     const elemento = document.getElementById(id);
 
-    if (elemento) {
-        elemento.textContent = valor == null ? "" : String(valor);
+    if (!elemento) return;
+
+    elemento.textContent = valor == null ? "" : String(valor);
+}
+
+/* =========================================================
+   FORMATAR DATA
+========================================================= */
+
+function formatarData(valor) {
+    if (!valor) return "";
+
+    const texto = String(valor);
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
+        const [ano, mes, dia] = texto.split("-");
+        return `${dia}/${mes}/${ano}`;
     }
+
+    return texto;
 }
 
 /* =========================================================
@@ -281,66 +295,101 @@ function atualizarStatus(status) {
 
     elemento.className = "status";
 
-    const situacao = String(status).toLowerCase();
+    const situacao = normalizarTexto(status);
 
-    if (situacao === "entregue") {
-        elemento.classList.add("finalizado");
-    } else if (situacao === "cancelado") {
+    if (situacao.includes("cancel")) {
         elemento.classList.add("cancelado");
+    } else if (
+        situacao.includes("entregue") ||
+        situacao.includes("finalizado")
+    ) {
+        elemento.classList.add("finalizado");
     } else if (situacao) {
         elemento.classList.add("entregue");
     }
 }
 
 /* =========================================================
-   PREENCHER LINHA DO TEMPO
+   NORMALIZAR TEXTO
 ========================================================= */
 
-function atualizarLinhaDoTempo(etapas) {
+function normalizarTexto(texto) {
+    return String(texto ?? "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+}
+
+/* =========================================================
+   ATUALIZAR LINHA DO TEMPO
+========================================================= */
+
+function atualizarLinhaDoTempo(etapas, status) {
     const linha = document.getElementById("linhaDoTempo");
 
-    if (!linha || !Array.isArray(etapas)) return;
+    if (!linha) return;
 
     const itens = linha.querySelectorAll(".timeline-item");
+    const situacao = normalizarTexto(status);
+
+    let etapaAtual = 0;
+
+    if (situacao.includes("cancel")) {
+        etapaAtual = -1;
+    } else if (
+        situacao.includes("entregue") ||
+        situacao.includes("finalizado")
+    ) {
+        etapaAtual = 4;
+    } else if (
+        situacao.includes("transporte") ||
+        situacao.includes("caminho")
+    ) {
+        etapaAtual = 3;
+    } else if (
+        situacao.includes("preparado") ||
+        situacao.includes("separado")
+    ) {
+        etapaAtual = 2;
+    } else if (
+        situacao.includes("pagamento") ||
+        situacao.includes("confirmado")
+    ) {
+        etapaAtual = 1;
+    }
 
     itens.forEach((item, indice) => {
-        const etapa = etapas[indice];
+        const etapa = Array.isArray(etapas) ? etapas[indice] : null;
 
         const descricao = item.querySelector(".timeline-info p");
         const data = item.querySelector(".timeline-info span");
 
-        if (!etapa) {
-            item.classList.remove("concluido", "ativo");
+        item.classList.remove("concluido", "ativo");
 
-            if (descricao) descricao.textContent = "";
-            if (data) data.textContent = "";
+        if (etapa) {
+            if (descricao) {
+                descricao.textContent = etapa.descricao ?? "";
+            }
 
+            if (data) {
+                data.textContent = formatarData(etapa.data ?? "");
+            }
+
+            item.classList.toggle("concluido", etapa.concluida === true);
+            item.classList.toggle("ativo", etapa.ativa === true);
             return;
         }
 
-        if (descricao) {
-            descricao.textContent = etapa.descricao ?? "";
-        }
+        if (descricao) descricao.textContent = "";
+        if (data) data.textContent = "";
 
-        if (data) {
-            data.textContent = etapa.data ?? "";
-        }
+        if (etapaAtual === -1) return;
 
-        item.classList.toggle("concluido", etapa.concluida === true);
-        item.classList.toggle("ativo", etapa.ativa === true);
-    });
-}
-
-/* =========================================================
-   ENTER NO CAMPO DE BUSCA
-========================================================= */
-
-const campoCodigoPedido = document.getElementById("codigoPedido");
-
-if (campoCodigoPedido) {
-    campoCodigoPedido.addEventListener("keydown", event => {
-        if (event.key === "Enter") {
-            consultarPedido();
+        if (indice < etapaAtual) {
+            item.classList.add("concluido");
+        } else if (indice === etapaAtual) {
+            item.classList.add("ativo");
         }
     });
 }
@@ -359,6 +408,10 @@ function voltarPagina() {
         window.location.href = "../index.html";
     }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    carregarMinhasCompras();
+});
 
 /* =========================================================
    INICIALIZAÇÃO

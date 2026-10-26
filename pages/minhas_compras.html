@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Minhas Compras | SuperMercado</title>
+
+    <link rel="stylesheet" href="../style/minhas_compras.css">
+    <script src="../js/minhas_compras.js" defer></script>
+</head>
+
+<body>
+
+    <header class="cabecalho">
+        <div class="logo">
+            <h2>SuperMercado</h2>
+        </div>
+
+        <button id="botaoUsuario" class="botao-sair" type="button">
+            <span class="icone-sair">👤</span>
+            <span>Sair</span>
+        </button>
+    </header>
+
+    <main class="container">
+
+        <section class="titulo-pagina">
+            <h1>Minhas Compras</h1>
+            <p>Acompanhe seus pedidos e consulte suas compras.</p>
+        </section>
+
+        <section class="filtros">
+            <div class="campo-busca">
+                <label for="pesquisaPedido">Pesquisar pedido</label>
+                <input
+                    type="search"
+                    id="pesquisaPedido"
+                    placeholder="Digite o número do pedido..."
+                >
+            </div>
+
+            <div class="campo-filtro">
+                <label for="filtroStatus">Status do pedido</label>
+                <select id="filtroStatus">
+                    <option value="">Todos os pedidos</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="preparando">Em preparação</option>
+                    <option value="transporte">Em transporte</option>
+                    <option value="entregue">Entregue</option>
+                    <option value="cancelado">Cancelado</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="secao-pedidos">
+            <div class="cabecalho-pedidos">
+                <h2>Histórico de pedidos</h2>
+                <span id="totalPedidos">0 pedidos</span>
+            </div>
+
+            <div id="listaPedidos" class="lista-pedidos">
+
+                <!-- Os pedidos serão carregados pelo JavaScript -->
+
+                <div class="mensagem-carregamento">
+                    Carregando seus pedidos...
+                </div>
+
+            </div>
+
+            <div id="mensagemVazia" class="mensagem-vazia" hidden>
+                <div class="icone-vazio">🛒</div>
+                <h3>Nenhuma compra encontrada</h3>
+                <p>Seus pedidos aparecerão aqui quando estiverem disponíveis.</p>
+            </div>
+
+        </section>
+
+        <section id="detalhesPedido" class="detalhes-pedido" hidden>
+
+            <div class="topo-detalhes">
+                <div>
+                    <h2>Detalhes do pedido</h2>
+                    <p>Confira as informações da sua compra.</p>
+                </div>
+
+                <button id="fecharDetalhes" class="botao-fechar" type="button">
+                    Fechar
+                </button>
+            </div>
+
+            <div class="card-detalhes-pedido">
+
+                <h3 id="detalheNomeProduto">Produtos do pedido</h3>
+
+                <p><strong>Código:</strong>
+                    <span id="detalheCodigo">-</span>
+                </p>
+
+                <p><strong>Data da compra:</strong>
+                    <span id="detalheData">-</span>
+                </p>
+
+                <p><strong>Status:</strong>
+                    <span id="detalheStatus">-</span>
+                </p>
+
+                <p><strong>Valor total:</strong>
+                    <span id="detalheValor">R$ 0,00</span>
+                </p>
+
+                <div class="acoes-detalhes">
+                    <button id="botaoAcompanhar" type="button" class="botao-principal">
+                        Acompanhar entrega
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <div class="rodape-acoes">
+            <button id="botaoVoltar" class="botao-secundario" type="button">
+                ← Voltar
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="rodape">
+        <p>© 2026 SuperMercado. Todos os direitos reservados.</p>
+    </footer>
+
+</body>
+</html>

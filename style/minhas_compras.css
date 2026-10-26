@@ -1,0 +1,619 @@
+/* =========================================
+   CONFIGURAÇÕES GERAIS
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --azul-escuro: #0A048A;
+    --azul: #0A048A;
+    --azul-hover: #0A048A;
+    --fundo: #f4f6fa;
+    --branco: #ffffff;
+    --texto: #1f2937;
+    --texto-secundario: #6b7280;
+    --borda: #e5e7eb;
+    --verde: #15803d;
+    --laranja: #c2410c;
+    --vermelho: #dc2626;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--fundo);
+    color: var(--texto);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================================
+   CABEÇALHO
+========================================= */
+
+.cabecalho {
+    width: 100%;
+    min-height: 75px;
+    padding: 16px 6%;
+    background-color: var(--azul-escuro);
+    color: var(--branco);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    background-color: #0A048A;
+}
+
+.logo h2 {
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.botao-sair {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+
+    background-color: #ffffff;
+    color: #0A048A;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.botao-sair:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.icone-sair {
+    font-size: 17px;
+    
+}
+
+/* =========================================
+   CONTEÚDO PRINCIPAL
+========================================= */
+
+.container {
+    width: 88%;
+    max-width: 1200px;
+    margin: 35px auto;
+    flex: 1;
+}
+
+.titulo-pagina {
+    margin-bottom: 30px;
+}
+
+.titulo-pagina h1 {
+    font-size: 30px;
+    color: var(--azul-escuro);
+    margin-bottom: 9px;
+}
+
+.titulo-pagina p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--texto-secundario);
+}
+
+/* =========================================
+   FILTROS E PESQUISA
+========================================= */
+
+.filtros {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+
+    padding: 24px;
+    margin-bottom: 30px;
+
+    background-color: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(16, 24, 39, 0.04);
+}
+
+.campo-busca,
+.campo-filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.campo-busca label,
+.campo-filtro label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--texto);
+}
+
+.campo-busca input,
+.campo-filtro select {
+    width: 100%;
+    height: 45px;
+    padding: 0 13px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+
+    background-color: var(--branco);
+    color: var(--texto);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo-busca input:focus,
+.campo-filtro select:focus {
+    border-color: var(--azul);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* =========================================
+   LISTA DE PEDIDOS
+========================================= */
+
+.secao-pedidos {
+    margin-bottom: 30px;
+}
+
+.cabecalho-pedidos {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.cabecalho-pedidos h2 {
+    font-size: 21px;
+    color: var(--azul-escuro);
+}
+
+#totalPedidos {
+    font-size: 13px;
+    color: var(--texto-secundario);
+    background-color: #e9edf5;
+    padding: 7px 12px;
+    border-radius: 20px;
+}
+
+/* Cartão individual de pedido */
+
+.card-pedido {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+
+    padding: 23px;
+    margin-bottom: 15px;
+
+    background-color: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+
+    box-shadow: 0 3px 10px rgba(16, 24, 39, 0.035);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card-pedido:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 5px 16px rgba(16, 24, 39, 0.07);
+}
+
+.info-pedido {
+    flex: 1;
+    min-width: 0;
+}
+
+.numero-pedido {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--azul-escuro);
+    overflow-wrap: anywhere;
+}
+
+.data-pedido {
+    margin-bottom: 9px;
+    font-size: 13px;
+    color: var(--texto-secundario);
+}
+
+.valor-pedido {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--texto);
+}
+
+.acoes-pedido {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* =========================================
+   STATUS DO PEDIDO
+========================================= */
+
+.status-pedido {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 7px 11px;
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-pendente {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-confirmado {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-preparando {
+    background-color: #ffedd5;
+    color: #9a3412;
+}
+
+.status-transporte {
+    background-color: #ede9fe;
+    color: #6d28d9;
+}
+
+.status-entregue {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-cancelado {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* =========================================
+   BOTÕES
+========================================= */
+
+.botao-principal,
+.botao-secundario,
+.botao-detalhes,
+.botao-fechar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 42px;
+    padding: 11px 17px;
+
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.botao-principal {
+    background-color: var(--azul);
+    color: var(--branco);
+    border: 1px solid var(--azul);
+}
+
+.botao-principal:hover {
+    background-color: var(--azul-hover);
+    border-color: var(--azul-hover);
+}
+
+.botao-detalhes {
+    background-color: var(--branco);
+    color: var(--azul);
+    border: 1px solid #bfdbfe;
+}
+
+.botao-detalhes:hover {
+    background-color: #eff6ff;
+    border-color: var(--azul);
+}
+
+.botao-secundario,
+.botao-fechar {
+    background-color: var(--branco);
+    color: var(--texto);
+    border: 1px solid #d1d5db;
+}
+
+.botao-secundario:hover,
+.botao-fechar:hover {
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
+}
+
+/* =========================================
+   DETALHES DO PEDIDO
+========================================= */
+
+.detalhes-pedido {
+    padding: 25px;
+    margin-bottom: 30px;
+
+    background-color: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+
+    box-shadow: 0 4px 15px rgba(16, 24, 39, 0.05);
+    scroll-margin-top: 20px;
+}
+
+.topo-detalhes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--borda);
+}
+
+.topo-detalhes h2 {
+    margin-bottom: 7px;
+    font-size: 21px;
+    color: var(--azul-escuro);
+}
+
+.topo-detalhes p {
+    font-size: 14px;
+    color: var(--texto-secundario);
+}
+
+.card-detalhes-pedido h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.card-detalhes-pedido p {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    padding: 13px 0;
+    border-bottom: 1px solid #f0f1f4;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.card-detalhes-pedido p strong {
+    color: var(--texto);
+}
+
+.card-detalhes-pedido p span {
+    color: var(--texto-secundario);
+    overflow-wrap: anywhere;
+}
+
+.acoes-detalhes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+/* =========================================
+   CARREGAMENTO E ESTADO VAZIO
+========================================= */
+
+.mensagem-carregamento,
+.mensagem-vazia {
+    padding: 45px 20px;
+    text-align: center;
+
+    background-color: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+}
+
+.mensagem-carregamento {
+    color: var(--texto-secundario);
+    font-size: 14px;
+}
+
+.mensagem-vazia .icone-vazio {
+    margin-bottom: 15px;
+    font-size: 42px;
+}
+
+.mensagem-vazia h3 {
+    margin-bottom: 10px;
+    color: var(--azul-escuro);
+    font-size: 19px;
+}
+
+.mensagem-vazia p {
+    color: var(--texto-secundario);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* =========================================
+   ÁREA DE VOLTAR
+========================================= */
+
+.rodape-acoes {
+    margin-top: 25px;
+}
+
+.botao-secundario {
+    min-width: 115px;
+}
+
+/* =========================================
+   RODAPÉ
+========================================= */
+
+.rodape {
+    width: 100%;
+    padding: 22px 15px;
+    margin-top: auto;
+
+    background-color: var(--azul-escuro);
+    color: #cbd5e1;
+
+    text-align: center;
+    font-size: 13px;
+}
+
+/* =========================================
+   RESPONSIVIDADE - TABLETS
+========================================= */
+
+@media (max-width: 768px) {
+    .cabecalho {
+        padding: 15px 5%;
+    }
+
+    .container {
+        width: 92%;
+        margin: 27px auto;
+    }
+
+    .titulo-pagina h1 {
+        font-size: 26px;
+    }
+
+    .filtros {
+        grid-template-columns: 1fr;
+        padding: 19px;
+        gap: 17px;
+    }
+
+    .card-pedido {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 17px;
+    }
+
+    .acoes-pedido {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .cabecalho-pedidos h2 {
+        font-size: 19px;
+    }
+}
+
+/* =========================================
+   RESPONSIVIDADE - CELULARES
+========================================= */
+
+@media (max-width: 480px) {
+    .cabecalho {
+        min-height: 65px;
+        gap: 10px;
+    }
+
+    .logo h2 {
+        font-size: 19px;
+    }
+
+    .botao-sair {
+        padding: 9px 11px;
+        font-size: 13px;
+    }
+
+    .container {
+        width: 92%;
+        margin: 22px auto;
+    }
+
+    .titulo-pagina {
+        margin-bottom: 22px;
+    }
+
+    .titulo-pagina h1 {
+        font-size: 24px;
+    }
+
+    .titulo-pagina p {
+        font-size: 14px;
+    }
+
+    .filtros {
+        padding: 16px;
+        margin-bottom: 24px;
+    }
+
+    .cabecalho-pedidos {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .card-pedido {
+        padding: 18px;
+    }
+
+    .acoes-pedido {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .acoes-pedido button,
+    .acoes-pedido a {
+        width: 100%;
+    }
+
+    .detalhes-pedido {
+        padding: 18px;
+    }
+
+    .topo-detalhes {
+        align-items: flex-start;
+    }
+
+    .topo-detalhes h2 {
+        font-size: 19px;
+    }
+
+    .botao-principal,
+    .botao-secundario,
+    .botao-detalhes,
+    .botao-fechar {
+        min-height: 42px;
+    }
+}
+
+/* =========================================
+   ELEMENTOS OCULTOS
+========================================= */
+
+[hidden] {
+    display: none !important;
+}
