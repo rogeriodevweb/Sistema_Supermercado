@@ -17,6 +17,7 @@ const detalhesPedido = document.getElementById("detalhesPedido");
 const formPerfilCentral = document.getElementById("formPerfilCentral");
 const formEndereco = document.getElementById("formEndereco");
 
+const telaBoasVindas = document.getElementById("telaBoasVindas");
 const telaInicio = document.getElementById("telaInicio");
 const telaPerfil = document.getElementById("telaPerfil");
 const telaDetalhes = document.getElementById("telaDetalhes");
@@ -40,6 +41,7 @@ let produtosCarregando = false;
 
 function mostrarTela(tela) {
     const telas = [
+        telaBoasVindas,
         telaInicio,
         telaPerfil,
         telaDetalhes,
@@ -68,6 +70,13 @@ function mostrarTela(tela) {
     });
 
     switch (tela) {
+        case "boasVindas":
+            if (telaBoasVindas) {
+                telaBoasVindas.style.display = "block";
+                telaBoasVindas.classList.add("ativa");
+            }
+            break;
+
         case "inicio":
             if (telaInicio) {
                 telaInicio.style.display = "block";
@@ -1045,11 +1054,13 @@ function formatarSituacao(valor) {
     return String(valor);
 }
 
+
+
 /* =========================================
    INICIALIZAÇÃO
 ========================================= */
 
-mostrarTela("inicio");
+mostrarTela("boasVindas");
 
 carregarProdutos();
 

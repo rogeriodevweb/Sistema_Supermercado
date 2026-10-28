@@ -1495,3 +1495,40 @@ body {
         font-size: 12px;
     }
 }
+
+
+.conteudo-principal {
+    flex: 1;
+    min-height: calc(100vh - 69px);
+    padding: 30px;
+    background-color: #f4f6f9;
+}
+
+.tela {
+    display: none;
+}
+
+.tela.ativa {
+    display: block;
+}
+
+.boas-vindas {
+    max-width: 750px;
+    margin: 80px auto;
+    padding: 40px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+}
+
+.boas-vindas h1 {
+    color: #100780;
+    margin-bottom: 20px;
+}
+
+.boas-vindas p {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.8;
+}
