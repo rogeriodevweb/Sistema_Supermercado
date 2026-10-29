@@ -1,6 +1,5 @@
 
 const loginClienteModel = require("../model/login_cliente_model");
-const bcrypt = require("bcrypt");
 
 const loginClienteController = {
     login: (req, res) => {
@@ -13,7 +12,7 @@ const loginClienteController = {
             });
         }
 
-        loginClienteModel.buscarCliente(email, async (erro, clientes) => {
+        loginClienteModel.buscarCliente(email, (erro, clientes) => {
             if (erro) {
                 console.error("Erro ao realizar login:", erro);
 
@@ -32,36 +31,31 @@ const loginClienteController = {
 
             const cliente = clientes[0];
 
-            try {
-                const senhaCorreta = await bcrypt.compare(
-                    senha,
-                    cliente.senha
-                );
-
-                if (!senhaCorreta) {
-                    return res.status(401).json({
-                        sucesso: false,
-                        mensagem: "E-mail ou senha incorretos."
-                    });
-                }
-
-                return res.status(200).json({
-                    sucesso: true,
-                    mensagem: "Login realizado com sucesso!",
-                    cliente: {
-                        id: cliente.idcliente,
-                        nome: cliente.nome,
-                        email: cliente.email
-                    }
-                });
-            } catch (erroSenha) {
-                console.error("Erro ao verificar senha:", erroSenha);
-
-                return res.status(500).json({
+            // Comparar a senha diretamente com a salva no banco
+            if (senha !== cliente.senha) {
+                return res.status(401).json({
                     sucesso: false,
-                    mensagem: "Erro ao verificar a senha."
+                    mensagem: "E-mail ou senha incorretos."
                 });
             }
+
+            // Verificar se o cliente está ativo
+            if (Number(cliente.status) !== 1) {
+                return res.status(403).json({
+                    sucesso: false,
+                    mensagem: "Cliente inativo. Entre em contato com o suporte."
+                });
+            }
+
+            return res.status(200).json({
+                sucesso: true,
+                mensagem: "Login realizado com sucesso!",
+                cliente: {
+                    id: cliente.idcliente,
+                    nome: cliente.nome,
+                    email: cliente.email
+                }
+            });
         });
     }
 };

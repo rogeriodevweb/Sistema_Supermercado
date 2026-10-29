@@ -1,6 +1,6 @@
 
 const conexao = require("../conexao/conexao");
-const bcrypt = require("bcrypt");
+
 
 async function cadastrarClienteController(req, res) {
     try {
@@ -37,7 +37,7 @@ async function cadastrarClienteController(req, res) {
 
                 try {
                     // Criptografar a senha antes de salvar
-                    const senhaCriptografada = await bcrypt.hash(senha, 10);
+                    const senhaCriptografada = senha;
 
                     const sql = `
                         INSERT INTO cliente

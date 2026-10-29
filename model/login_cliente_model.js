@@ -8,9 +8,11 @@ const loginClienteModel = {
                 idcliente,
                 nome,
                 email,
-                senha
+                senha,
+                status
             FROM cliente
             WHERE email = ?
+            ORDER BY idcliente ASC
             LIMIT 1
         `;
 
