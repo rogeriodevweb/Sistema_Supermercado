@@ -1,505 +1,296 @@
-/* =========================================
-   MINHAS COMPRAS
-   Sistema_Supermercado
-========================================= */
-
 const API = "http://localhost:3000";
-
-const listaPedidos = document.getElementById("listaPedidos");
-const mensagemVazia = document.getElementById("mensagemVazia");
-const totalPedidos = document.getElementById("totalPedidos");
-const pesquisaPedido = document.getElementById("pesquisaPedido");
-const filtroStatus = document.getElementById("filtroStatus");
-
-const detalhesPedido = document.getElementById("detalhesPedido");
-const botaoFechar = document.getElementById("fecharDetalhes");
-const botaoAcompanhar = document.getElementById("botaoAcompanhar");
-const botaoVoltar = document.getElementById("botaoVoltar");
-const botaoUsuario = document.getElementById("botaoUsuario");
 
 let pedidos = [];
 let pedidoSelecionado = null;
 
-/* =========================================
-   CLIENTE LOGADO
-========================================= */
-
-function obterClienteLogado() {
-    try {
-        const dados = localStorage.getItem("cliente");
-
-        if (!dados) {
-            return null;
-        }
-
-        return JSON.parse(dados);
-    } catch (erro) {
-        console.error("Erro ao ler cliente:", erro);
-        return null;
-    }
-}
-
-const cliente = obterClienteLogado();
-
-/* =========================================
-   INICIALIZAÇÃO
-========================================= */
+const cliente = JSON.parse(localStorage.getItem("cliente") || "null");
+const idCliente = cliente?.id ?? cliente?.idcliente;
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (!cliente || !cliente.id) {
-        listaPedidos.innerHTML = "";
+    iniciarMinhasCompras();
+});
 
-        mensagemVazia.hidden = false;
-        mensagemVazia.querySelector("h3").textContent =
-            "Faça login para consultar suas compras.";
-
-        mensagemVazia.querySelector("p").textContent =
-            "Entre na sua conta para visualizar seus pedidos.";
-
+async function iniciarMinhasCompras() {
+    if (!cliente || !idCliente) {
+        alert("Faça login para visualizar suas compras.");
+        window.location.href = "login_cliente.html";
         return;
     }
 
-    carregarPedidos();
-});
+    await carregarCompras();
+    configurarEventos();
+}
 
-/* =========================================
-   BUSCAR PEDIDOS DA API
-========================================= */
-
-async function carregarPedidos() {
-    listaPedidos.innerHTML = `
-        <div class="mensagem-carregamento">
-            Carregando seus pedidos...
-        </div>
-    `;
-
-    mensagemVazia.hidden = true;
+async function carregarCompras() {
+    const listaPedidos = document.getElementById("listaPedidos");
+    const mensagemVazia = document.getElementById("mensagemVazia");
 
     try {
         const resposta = await fetch(
-            `${API}/clientes/${encodeURIComponent(cliente.id)}/pedidos`
+            `${API}/minhas-compras/${encodeURIComponent(idCliente)}`
         );
-
-        if (!resposta.ok) {
-            throw new Error(`Erro HTTP: ${resposta.status}`);
-        }
 
         const dados = await resposta.json();
 
-        // Aceita uma lista direta ou uma lista dentro de uma propriedade.
-        if (Array.isArray(dados)) {
-            pedidos = dados;
-        } else if (Array.isArray(dados.pedidos)) {
-            pedidos = dados.pedidos;
-        } else if (Array.isArray(dados.dados)) {
-            pedidos = dados.dados;
-        } else {
-            throw new Error(
-                dados.mensagem || "Formato de resposta dos pedidos inválido."
-            );
+        if (!resposta.ok || dados.sucesso === false) {
+            throw new Error(dados.mensagem || "Erro ao carregar compras.");
         }
 
-        renderizarPedidos();
+        pedidos = Array.isArray(dados.compras)
+            ? dados.compras
+            : Array.isArray(dados.pedidos)
+                ? dados.pedidos
+                : Array.isArray(dados.dados)
+                    ? dados.dados
+                    : Array.isArray(dados)
+                        ? dados
+                        : [];
+
+        renderizarCompras();
 
     } catch (erro) {
         console.error("Erro ao carregar compras:", erro);
 
-        listaPedidos.innerHTML = `
-            <div class="mensagem-carregamento">
-                Não foi possível carregar seus pedidos.
-                Verifique se o servidor está funcionando.
-                <br><br>
-                <button class="botao-principal"
-                        type="button"
-                        onclick="carregarPedidos()">
-                    Tentar novamente
-                </button>
+        if (listaPedidos) {
+            listaPedidos.innerHTML = `
+                <p class="mensagem-erro">
+                    Não foi possível carregar suas compras.
+                </p>
+            `;
+        }
+
+        if (mensagemVazia) {
+            mensagemVazia.style.display = "none";
+        }
+    }
+}
+
+function renderizarCompras() {
+    const listaPedidos = document.getElementById("listaPedidos");
+    const mensagemVazia = document.getElementById("mensagemVazia");
+    const totalPedidos = document.getElementById("totalPedidos");
+
+    if (!listaPedidos) return;
+
+    listaPedidos.innerHTML = "";
+
+    if (totalPedidos) {
+        totalPedidos.textContent = pedidos.length;
+    }
+
+    if (pedidos.length === 0) {
+        if (mensagemVazia) {
+            mensagemVazia.style.display = "block";
+        }
+        return;
+    }
+
+    if (mensagemVazia) {
+        mensagemVazia.style.display = "none";
+    }
+
+    pedidos.forEach((pedido) => {
+        const id = pedido.idpedidos ?? pedido.id;
+        const numero = pedido.numeroPedido ?? `#${id}`;
+        const data = formatarData(pedido.datapedido);
+        const status = pedido.statusPedido ?? "Em processamento";
+        const total = calcularTotal(pedido);
+
+        const card = document.createElement("div");
+        card.className = "pedido-card";
+
+        card.innerHTML = `
+            <div class="pedido-info">
+                <h3>Pedido ${numero}</h3>
+                <p><strong>Data:</strong> ${data}</p>
+                <p><strong>Status:</strong> ${status}</p>
+                <p><strong>Total:</strong> ${formatarMoeda(total)}</p>
             </div>
+
+            <button
+                type="button"
+                class="btn-detalhes"
+                data-id="${id}"
+            >
+                Ver detalhes
+            </button>
         `;
+
+        card.querySelector(".btn-detalhes").addEventListener("click", () => {
+            carregarDetalhes(id);
+        });
+
+        listaPedidos.appendChild(card);
+    });
+}
+
+async function carregarDetalhes(idPedido) {
+    try {
+        const resposta = await fetch(
+            `${API}/minhas-compras/${encodeURIComponent(idCliente)}/${encodeURIComponent(idPedido)}`
+        );
+
+        const dados = await resposta.json();
+
+        if (!resposta.ok || dados.sucesso === false) {
+            throw new Error(dados.mensagem || "Erro ao carregar detalhes.");
+        }
+
+        pedidoSelecionado = dados.compra ?? dados.pedido ?? dados.dados ?? dados;
+
+        exibirDetalhes(pedidoSelecionado);
+
+    } catch (erro) {
+        console.error("Erro ao carregar detalhes:", erro);
+        alert("Não foi possível carregar os detalhes deste pedido.");
     }
 }
 
-/* =========================================
-   NORMALIZAR STATUS
-========================================= */
+function exibirDetalhes(pedido) {
+    const detalhesPedido = document.getElementById("detalhesPedido");
 
-function normalizarStatus(status) {
-    const texto = String(status || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .trim();
+    if (!detalhesPedido) return;
 
-    if (texto.includes("cancel")) {
-        return "cancelado";
+    const itens = Array.isArray(pedido.itens) ? pedido.itens : [];
+
+    const detalheNomeProduto = document.getElementById("detalheNomeProduto");
+    const detalheCodigo = document.getElementById("detalheCodigo");
+    const detalheData = document.getElementById("detalheData");
+    const detalheStatus = document.getElementById("detalheStatus");
+    const detalheValor = document.getElementById("detalheValor");
+
+    if (detalheNomeProduto) {
+        detalheNomeProduto.textContent = itens.length
+            ? itens.map(item => {
+                const quantidade = Number(item.quantidade || 0);
+                const preco = Number(item.precoUnitario || 0);
+                const desconto = Number(item.desconto || 0);
+                const subtotal = Number(
+                    item.subtotal ?? Math.max(0, quantidade * preco - desconto)
+                );
+
+                return `${item.nomeProduto ?? item.nome ?? "Produto"} — Qtd.: ${quantidade} — ${formatarMoeda(subtotal)}`;
+            }).join(" | ")
+            : "Nenhum produto encontrado.";
     }
 
-    if (texto.includes("entreg")) {
-        return "entregue";
+    if (detalheCodigo) {
+        detalheCodigo.textContent = pedido.numeroPedido ?? pedido.idpedidos ?? "-";
     }
 
-    if (
-        texto.includes("transport") ||
-        texto.includes("caminho")
-    ) {
-        return "transporte";
+    if (detalheData) {
+        detalheData.textContent = formatarData(pedido.datapedido);
     }
 
-    if (
-        texto.includes("prepar") ||
-        texto.includes("separ")
-    ) {
-        return "preparando";
+    if (detalheStatus) {
+        detalheStatus.textContent = pedido.statusPedido ?? "-";
     }
 
-    if (
-        texto.includes("confirm") ||
-        texto.includes("pago")
-    ) {
-        return "confirmado";
+    if (detalheValor) {
+        detalheValor.textContent = formatarMoeda(calcularTotal(pedido));
     }
 
-    if (
-        texto.includes("pend") ||
-        texto.includes("aguard")
-    ) {
-        return "pendente";
-    }
-
-    return texto;
+    detalhesPedido.style.display = "block";
+    detalhesPedido.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 }
 
-function obterNomeStatus(status) {
-    const nomes = {
-        pendente: "Pendente",
-        confirmado: "Confirmado",
-        preparando: "Em preparação",
-        transporte: "Em transporte",
-        entregue: "Entregue",
-        cancelado: "Cancelado"
-    };
+function calcularTotal(pedido) {
+    if (pedido.valorTotal !== undefined && pedido.valorTotal !== null) {
+        return Number(pedido.valorTotal);
+    }
 
-    return nomes[normalizarStatus(status)] || status || "Não informado";
+    const itens = Array.isArray(pedido.itens) ? pedido.itens : [];
+
+    return itens.reduce((total, item) => {
+        const quantidade = Number(item.quantidade || 0);
+        const preco = Number(item.precoUnitario || 0);
+        const desconto = Number(item.desconto || 0);
+
+        return total + Math.max(0, quantidade * preco - desconto);
+    }, 0);
 }
-
-/* =========================================
-   FORMATAR DADOS
-========================================= */
 
 function formatarMoeda(valor) {
-    const numero = Number(valor);
-
-    if (!Number.isFinite(numero)) {
-        return "R$ 0,00";
-    }
-
-    return numero.toLocaleString("pt-BR", {
+    return Number(valor || 0).toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL"
     });
 }
 
 function formatarData(data) {
-    if (!data) {
-        return "Data não informada";
-    }
-
-    // Trata datas no formato YYYY-MM-DD sem alterar o dia.
-    const texto = String(data);
-    const correspondencia = texto.match(/^(\d{4})-(\d{2})-(\d{2})/);
-
-    if (correspondencia) {
-        return `${correspondencia[3]}/${correspondencia[2]}/${correspondencia[1]}`;
-    }
+    if (!data) return "-";
 
     const dataConvertida = new Date(data);
 
     if (Number.isNaN(dataConvertida.getTime())) {
-        return texto;
+        return data;
     }
 
     return dataConvertida.toLocaleDateString("pt-BR");
 }
 
-function obterIdPedido(pedido) {
-    return pedido.idpedidos ?? pedido.idPedido ?? pedido.id;
+function configurarEventos() {
+    const pesquisaPedido = document.getElementById("pesquisaPedido");
+    const filtroStatus = document.getElementById("filtroStatus");
+
+    if (pesquisaPedido) {
+        pesquisaPedido.addEventListener("input", aplicarFiltros);
+    }
+
+    if (filtroStatus) {
+        filtroStatus.addEventListener("change", aplicarFiltros);
+    }
 }
 
-function obterNumeroPedido(pedido) {
-    return pedido.numeroPedido ??
-        pedido.numero_pedido ??
-        `Pedido #${obterIdPedido(pedido) ?? "-"}`;
-}
+function aplicarFiltros() {
+    const pesquisaPedido = document.getElementById("pesquisaPedido");
+    const filtroStatus = document.getElementById("filtroStatus");
 
-function obterDataPedido(pedido) {
-    return pedido.datapedido ??
-        pedido.dataPedido ??
-        pedido.data_pedido ??
-        pedido.data ??
-        "";
-}
+    const pesquisa = pesquisaPedido?.value.toLowerCase().trim() || "";
+    const statusFiltro = filtroStatus?.value || "";
 
-function obterStatusPedido(pedido) {
-    return pedido.statusPedido ??
-        pedido.status_pedido ??
-        pedido.status ??
-        "";
-}
+    const filtrados = pedidos.filter(pedido => {
+        const numero = String(pedido.numeroPedido ?? pedido.idpedidos ?? "");
+        const status = String(pedido.statusPedido ?? "");
 
-function obterValorPedido(pedido) {
-    return pedido.valorTotal ??
-        pedido.valor_total ??
-        pedido.total ??
-        pedido.valor ??
-        0;
-}
+        const correspondePesquisa = numero.toLowerCase().includes(pesquisa);
+        const correspondeStatus = !statusFiltro || status === statusFiltro;
 
-/* =========================================
-   MOSTRAR PEDIDOS NA TELA
-========================================= */
-
-function renderizarPedidos() {
-    const termo = pesquisaPedido.value.trim().toLowerCase();
-    const statusFiltro = filtroStatus.value;
-
-    const pedidosFiltrados = pedidos.filter(pedido => {
-        const numero = String(obterNumeroPedido(pedido)).toLowerCase();
-        const status = normalizarStatus(obterStatusPedido(pedido));
-
-        const correspondeNumero = numero.includes(termo);
-
-        const correspondeStatus =
-            !statusFiltro || status === statusFiltro;
-
-        return correspondeNumero && correspondeStatus;
+        return correspondePesquisa && correspondeStatus;
     });
 
-    totalPedidos.textContent =
-        `${pedidosFiltrados.length} ${
-            pedidosFiltrados.length === 1 ? "pedido" : "pedidos"
-        }`;
+    const listaPedidos = document.getElementById("listaPedidos");
+
+    if (!listaPedidos) return;
 
     listaPedidos.innerHTML = "";
 
-    if (pedidosFiltrados.length === 0) {
-        mensagemVazia.hidden = false;
+    filtrados.forEach(pedido => {
+        const id = pedido.idpedidos ?? pedido.id;
 
-        mensagemVazia.querySelector("h3").textContent =
-            pedidos.length === 0
-                ? "Nenhuma compra encontrada"
-                : "Nenhum pedido corresponde à pesquisa.";
+        const card = document.createElement("div");
+        card.className = "pedido-card";
 
-        mensagemVazia.querySelector("p").textContent =
-            pedidos.length === 0
-                ? "Seus pedidos aparecerão aqui quando estiverem disponíveis."
-                : "Experimente alterar o número do pedido ou o filtro de status.";
+        card.innerHTML = `
+            <div class="pedido-info">
+                <h3>Pedido ${pedido.numeroPedido ?? `#${id}`}</h3>
+                <p><strong>Data:</strong> ${formatarData(pedido.datapedido)}</p>
+                <p><strong>Status:</strong> ${pedido.statusPedido ?? "Em processamento"}</p>
+                <p><strong>Total:</strong> ${formatarMoeda(calcularTotal(pedido))}</p>
+            </div>
 
-        return;
-    }
+            <button type="button" class="btn-detalhes">
+                Ver detalhes
+            </button>
+        `;
 
-    mensagemVazia.hidden = true;
-
-    pedidosFiltrados.forEach(pedido => {
-        const statusOriginal = obterStatusPedido(pedido);
-        const status = normalizarStatus(statusOriginal);
-        const id = obterIdPedido(pedido);
-
-        const card = document.createElement("article");
-        card.className = "card-pedido";
-
-        const informacoes = document.createElement("div");
-        informacoes.className = "info-pedido";
-
-        const numero = document.createElement("h3");
-        numero.className = "numero-pedido";
-        numero.textContent = obterNumeroPedido(pedido);
-
-        const data = document.createElement("p");
-        data.className = "data-pedido";
-        data.textContent = `Data: ${formatarData(obterDataPedido(pedido))}`;
-
-        const valor = document.createElement("p");
-        valor.className = "valor-pedido";
-        valor.textContent = formatarMoeda(obterValorPedido(pedido));
-
-        informacoes.append(numero, data, valor);
-
-        const acoes = document.createElement("div");
-        acoes.className = "acoes-pedido";
-
-        const etiqueta = document.createElement("span");
-        etiqueta.className = `status-pedido status-${status}`;
-        etiqueta.textContent = obterNomeStatus(statusOriginal);
-
-        const botaoDetalhes = document.createElement("button");
-        botaoDetalhes.type = "button";
-        botaoDetalhes.className = "botao-detalhes";
-        botaoDetalhes.textContent = "Ver detalhes";
-
-        botaoDetalhes.addEventListener("click", () => {
-            abrirDetalhesPedido(pedido);
+        card.querySelector(".btn-detalhes").addEventListener("click", () => {
+            carregarDetalhes(id);
         });
-
-        acoes.append(etiqueta, botaoDetalhes);
-        card.append(informacoes, acoes);
 
         listaPedidos.appendChild(card);
     });
 }
-
-/* =========================================
-   ABRIR DETALHES DO PEDIDO
-========================================= */
-
-async function abrirDetalhesPedido(pedido) {
-    pedidoSelecionado = pedido;
-
-    const id = obterIdPedido(pedido);
-
-    document.getElementById("detalheNomeProduto").textContent =
-        "Produtos do pedido";
-
-    document.getElementById("detalheCodigo").textContent =
-        obterNumeroPedido(pedido);
-
-    document.getElementById("detalheData").textContent =
-        formatarData(obterDataPedido(pedido));
-
-    document.getElementById("detalheStatus").textContent =
-        obterNomeStatus(obterStatusPedido(pedido));
-
-    document.getElementById("detalheValor").textContent =
-        formatarMoeda(obterValorPedido(pedido));
-
-    detalhesPedido.hidden = false;
-    detalhesPedido.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-
-    if (id == null) {
-        return;
-    }
-
-    try {
-        const resposta = await fetch(
-            `${API}/clientes/${encodeURIComponent(cliente.id)}/pedidos/${encodeURIComponent(id)}`
-        );
-
-        if (!resposta.ok) {
-            throw new Error(`Erro HTTP: ${resposta.status}`);
-        }
-
-        const dados = await resposta.json();
-
-        const detalhe = dados.pedido ??
-            dados.dados ??
-            dados;
-
-        // Confere se o usuário não selecionou outro pedido durante a consulta.
-        if (obterIdPedido(pedidoSelecionado) != id) {
-            return;
-        }
-
-        document.getElementById("detalheCodigo").textContent =
-            obterNumeroPedido(detalhe);
-
-        document.getElementById("detalheData").textContent =
-            formatarData(obterDataPedido(detalhe));
-
-        document.getElementById("detalheStatus").textContent =
-            obterNomeStatus(obterStatusPedido(detalhe));
-
-        document.getElementById("detalheValor").textContent =
-            formatarMoeda(obterValorPedido(detalhe));
-
-        const produtos = detalhe.itens ??
-            detalhe.produtos ??
-            detalhe.itensPedido ??
-            detalhe.itens_pedido;
-
-        if (Array.isArray(produtos) && produtos.length > 0) {
-            document.getElementById("detalheNomeProduto").textContent =
-                produtos.map(item =>
-                    `${item.nomeProduto ?? item.nome ?? item.descricao ?? "Produto"} (Qtd.: ${item.quantidade ?? 1})`
-                ).join(", ");
-        }
-
-    } catch (erro) {
-        console.error("Erro ao buscar detalhes do pedido:", erro);
-        // Mantém na tela os dados que já vieram da lista de pedidos.
-    }
-}
-
-/* =========================================
-   PESQUISA E FILTROS
-========================================= */
-
-pesquisaPedido.addEventListener("input", renderizarPedidos);
-
-filtroStatus.addEventListener("change", renderizarPedidos);
-
-/* =========================================
-   FECHAR DETALHES
-========================================= */
-
-botaoFechar.addEventListener("click", () => {
-    detalhesPedido.hidden = true;
-    pedidoSelecionado = null;
-});
-
-/* =========================================
-   ACOMPANHAR ENTREGA
-========================================= */
-
-botaoAcompanhar.addEventListener("click", () => {
-    if (!pedidoSelecionado) {
-        alert("Selecione um pedido primeiro.");
-        return;
-    }
-
-    const id = obterIdPedido(pedidoSelecionado);
-
-    if (id == null) {
-        alert("Não foi possível identificar este pedido.");
-        return;
-    }
-
-    const status = normalizarStatus(obterStatusPedido(pedidoSelecionado));
-
-    if (status === "cancelado") {
-        alert("Este pedido foi cancelado e não possui entrega em andamento.");
-        return;
-    }
-
-    window.location.href =
-        `acompanhar_entrega.html?pedidoId=${encodeURIComponent(id)}`;
-});
-
-/* =========================================
-   BOTÃO VOLTAR
-========================================= */
-
-botaoVoltar.addEventListener("click", () => {
-    if (window.history.length > 1) {
-        window.history.back();
-    } else {
-        window.location.href = "home_cliente.html";
-    }
-});
-
-/* =========================================
-   SAIR DA CONTA
-========================================= */
-
-botaoUsuario.addEventListener("click", () => {
-    const confirmar = confirm("Deseja realmente sair da sua conta?");
-
-    if (!confirmar) {
-        return;
-    }
-
-    localStorage.removeItem("cliente");
-
-    window.location.href = "login_cliente.html";
-});
