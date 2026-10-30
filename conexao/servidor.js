@@ -39,8 +39,10 @@ const perfilClienteController = require("../controller/perfil_cliente_controller
 ========================================= */
 
 const homeClienteRotas = require("../routs/home_cliente_rotas");
+const minhasComprasRotas = require("../routs/minhas_compras_rotas");
 
 app.use("/", homeClienteRotas);
+app.use("/minhas-compras", minhasComprasRotas);
 
 /* =========================================
    CADASTRO DO CLIENTE

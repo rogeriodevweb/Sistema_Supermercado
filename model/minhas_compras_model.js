@@ -82,9 +82,50 @@ async function listarCompras(idcliente) {
         ORDER BY p.idpedidos DESC, ip.iditensPedidos ASC
     `;
 
-    const [linhas] = await db.execute(sql, [idcliente]);
+    console.log("ID recebido pelo model:", idcliente);
 
-    return agruparPedidos(linhas);
+const [banco] = await db.promise().query(
+    "SELECT DATABASE() AS banco"
+);
+const [diagnostico] = await db.promise().query(`
+    SELECT
+        @@server_uuid AS servidor_uuid,
+        @@datadir AS diretorio_dados
+`);
+
+const [total] = await db.promise().query(`
+    SELECT COUNT(*) AS total_pedidos
+    FROM supermercado.pedidos
+`);
+
+console.log("IDENTIFICAÇÃO DO MYSQL:", diagnostico);
+console.log("TOTAL DE PEDIDOS NO NODE:", total);
+
+console.log("Banco utilizado:", banco[0].banco);
+
+const [teste] = await db.promise().query(
+    "SELECT * FROM supermercado.pedidos WHERE idpedidos = 1"
+);
+
+console.log("TESTE DO PEDIDO:", teste);
+
+console.log("Pedidos encontrados:", teste);
+
+const [info] = await db.promise().query(`
+    SELECT
+        @@hostname AS servidor,
+        @@port AS porta,
+        DATABASE() AS banco,
+        CURRENT_USER() AS usuario
+`);
+
+console.log("CONEXÃO NODE.JS:", info);
+const [linhas] = await db.promise().execute(sql, [idcliente]);
+
+console.log("Linhas retornadas pela consulta:", linhas.length);
+console.log(linhas);
+
+return agruparPedidos(linhas);
 }
 
 async function buscarDetalhes(idcliente, idpedido) {
@@ -95,7 +136,7 @@ async function buscarDetalhes(idcliente, idpedido) {
         ORDER BY ip.iditensPedidos ASC
     `;
 
-    const [linhas] = await db.execute(sql, [idcliente, idpedido]);
+    const [linhas] = await db.promise().execute(sql, [idcliente, idpedido]);
     const pedidos = agruparPedidos(linhas);
 
     return pedidos[0] || null;
